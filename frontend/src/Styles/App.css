@@ -1,0 +1,21 @@
+
+[class*="Panel-"] {
+  display: flex;
+  float: left;
+  height: 100%;
+  width: 100%;
+}
+
+.Panel-1 {
+  padding: 5px 5px 5px 5px;
+  background-color: rgb(201, 201, 193);
+  float:left;
+}
+
+.Panel-0 {
+  float: left;
+  background-color: white;
+  height: 100vh;
+  width: 100vw;
+}
+
