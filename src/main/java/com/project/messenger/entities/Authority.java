@@ -1,4 +1,4 @@
-package com.project.messenger.security.entities;
+package com.project.messenger.entities;
 
 import java.util.Set;
 

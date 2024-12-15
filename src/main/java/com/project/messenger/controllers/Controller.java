@@ -12,7 +12,12 @@ public class Controller {
     public String home() {
         var u = SecurityContextHolder.getContext().getAuthentication();
         u.getAuthorities().forEach(a -> System.out.println(a));
-        return "hello";
+        return "public";
+    }
+
+    @GetMapping("/private")
+    public String privateEndpoint() {
+        return "private";
     }
 
     @GetMapping("/data")

@@ -2,6 +2,8 @@ package com.project.messenger.security.entities;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.project.messenger.entities.Authority;
+
 
 
 public class SecurityAuthority implements GrantedAuthority {

@@ -1,10 +1,10 @@
-package com.project.messenger.security.repositories;
+package com.project.messenger.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.project.messenger.security.entities.User;
+import com.project.messenger.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     

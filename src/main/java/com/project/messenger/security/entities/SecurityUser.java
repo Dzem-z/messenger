@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.project.messenger.entities.User;
+
 
 public class SecurityUser implements UserDetails {
 

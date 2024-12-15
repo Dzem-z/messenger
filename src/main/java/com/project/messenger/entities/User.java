@@ -1,4 +1,4 @@
-package com.project.messenger.security.entities;
+package com.project.messenger.entities;
 
 import java.util.Set;
 
@@ -28,10 +28,17 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name="users_authorities",
+        name = "users_authorities",
         joinColumns = @JoinColumn(name = "userId"),
         inverseJoinColumns = @JoinColumn(name = "authorityId"))
     private Set<Authority> authorities;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "users_chats",
+        joinColumns = @JoinColumn(name = "userId"),
+        inverseJoinColumns = @JoinColumn(name = "chatId"))
+    private Set<Chat> chats;
 
     public User() {
         username = null;
@@ -43,15 +50,15 @@ public class User {
         this.password = password;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    Set<Authority> getAuthorities() {
+    public Set<Authority> getAuthorities() {
         return authorities;
     }
 

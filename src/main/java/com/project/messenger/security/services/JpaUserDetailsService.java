@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.project.messenger.entities.User;
 import com.project.messenger.security.entities.SecurityUser;
-import com.project.messenger.security.entities.User;
 import com.project.messenger.security.repositories.UserRepository;
 
 
