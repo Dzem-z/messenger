@@ -2,6 +2,10 @@ package com.project.messenger.entities;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,11 +14,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.Setter;
 
-
+@JsonIdentityInfo(
+    generator = ObjectIdGenerators.PropertyGenerator.class,
+    property = "id"
+)
 @Entity
 @Table(name = "users")
+@Getter
 @Setter
 public class User {
     
@@ -22,6 +31,8 @@ public class User {
     @GeneratedValue
     private int id;
 
+    @Column(unique=true,
+        nullable=false)
     private String username;
 
     private String password;
@@ -33,11 +44,8 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "authorityId"))
     private Set<Authority> authorities;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "users_chats",
-        joinColumns = @JoinColumn(name = "userId"),
-        inverseJoinColumns = @JoinColumn(name = "chatId"))
+    @ManyToMany(mappedBy="members",
+        fetch = FetchType.EAGER)
     private Set<Chat> chats;
 
     public User() {
@@ -60,6 +68,10 @@ public class User {
 
     public Set<Authority> getAuthorities() {
         return authorities;
+    }
+
+    public Set<Chat> getChats() {
+        return chats;
     }
 
     @Override

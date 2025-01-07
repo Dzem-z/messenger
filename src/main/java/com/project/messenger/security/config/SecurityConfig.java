@@ -4,12 +4,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.project.messenger.security.repositories.UserRepository;
+import com.project.messenger.repositories.UserRepository;
 import com.project.messenger.security.services.JpaUserDetailsService;
 
 @Configuration
@@ -24,11 +25,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.httpBasic(withDefaults())
+        .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(
-                auth -> auth.requestMatchers("/").permitAll()
-                   .requestMatchers("/private").authenticated()
+                auth -> auth.requestMatchers("/", "/styles.css", "/register", "register/save").permitAll()
+                    .requestMatchers("/api/users").permitAll()
+                   .anyRequest().permitAll()//authenticated()
             )
-            .formLogin(withDefaults())
+            .formLogin(form -> form
+                .loginPage("/login")
+                .defaultSuccessUrl("/home", true)
+                .failureUrl("/login?error=true")
+                .permitAll())
+            
             .build();
     }
 

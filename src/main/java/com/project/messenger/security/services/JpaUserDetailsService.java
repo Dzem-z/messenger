@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.project.messenger.entities.User;
+import com.project.messenger.repositories.UserRepository;
 import com.project.messenger.security.entities.SecurityUser;
-import com.project.messenger.security.repositories.UserRepository;
 
 
 public class JpaUserDetailsService implements UserDetailsService {

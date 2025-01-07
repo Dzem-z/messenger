@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs/dist/stomp.min.js"></script>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    <p id="status">Connecting...</p>
+    <div id="messages"></div>
+    <button onclick="sendMessage()">Send Message</button>
+    <script>
+        let stompClient = null;
+
+        // Connect to WebSocket server
+        const connect = () => {
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, () => {
+                document.getElementById('status').innerText = 'Connected';
+
+                // Subscribe to topic
+                stompClient.subscribe('/topic/messages', (message) => {
+                    const msg = JSON.parse(message.body);
+                    const messageDiv = document.getElementById('messages');
+                    const newMessage = document.createElement('p');
+                    newMessage.innerText = `${msg.user}: ${msg.message}`;
+                    messageDiv.appendChild(newMessage);
+                });
+            }, (error) => {
+                console.error('Error connecting:', error);
+                document.getElementById('status').innerText = 'Error connecting';
+            });
+        };
+
+        // Send a message to the server
+        const sendMessage = () => {
+            if (stompClient && stompClient.connected) {
+                const message = { user: 'John', message: 'Hello World!' };
+                console.log('Sending message:', message);
+                stompClient.send('/app/message', {}, JSON.stringify(message));
+            } else {
+                alert('WebSocket is not connected.');
+            }
+        };
+
+        // Connect on page load
+        connect();
+    </script>
+</body>
+</html>

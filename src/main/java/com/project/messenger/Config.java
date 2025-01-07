@@ -11,7 +11,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 
 @Configuration
 public class Config implements WebMvcConfigurer {
-
+    
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
@@ -24,7 +24,7 @@ public class Config implements WebMvcConfigurer {
                 // Capture everything (REST controllers get priority over this, see above)
                 .addResourceHandler("/**")
                 // Add locations where files might be found
-                .addResourceLocations("classpath:/static/build/**")
+                .addResourceLocations("classpath:/static/**")
                 // Needed to allow use of `addResolver` below
                 .resourceChain(true)
                 // This thing is what does all the resolving. This impl. is responsible for
@@ -41,7 +41,7 @@ public class Config implements WebMvcConfigurer {
                         }
 
                         // Anything else returns the index.
-                        return new ClassPathResource("/static/build/index.html");
+                        return new ClassPathResource("/static/index.html");
                     }
                 });
 
