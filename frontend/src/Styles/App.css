@@ -375,6 +375,10 @@ ul {
   margin-left: 30px;
 }
 
+.send-form-input:focus::placeholder {
+  color: rgb(231, 233, 232);
+}
+
 input[type="text"] {
   -moz-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
   -o-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);

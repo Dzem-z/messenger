@@ -47,7 +47,7 @@ export default function NewChatScreen() {
     return <div className="border-box main">
         <div className="border-box find-user">
             <div className="send-form-block">
-                <div className="find-user-block">
+                <div className="text-block find-user-block">
                     find user:
                 </div>
                 <input type="text" name="search" className="send-form-input" placeholder="search for user..."
