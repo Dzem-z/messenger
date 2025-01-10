@@ -21,17 +21,21 @@ public class MessageDto {
 
     private ChatDto chat;
 
+    private UserDto author;
+
     public MessageDto(Message message) {
         this.id = message.getId();
         this.content = message.getContent();
         this.dateOfPosting = message.getDateOfPosting();
         this.chat = new ChatDto(message.getChat());
+        this.author = new UserDto(message.getAuthor());
     }
 
-    public MessageDto(int id, String content, OffsetDateTime dateOfPosting) {
+    public MessageDto(int id, String content, OffsetDateTime dateOfPosting, UserDto author) {
         this.id = id;
         this.content = content;
         this.dateOfPosting = dateOfPosting;
+        this.author = author;
     }
 
     public int getId() {

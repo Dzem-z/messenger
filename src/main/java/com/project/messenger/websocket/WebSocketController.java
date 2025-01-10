@@ -1,14 +1,21 @@
 package com.project.messenger.websocket;
 
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.security.Principal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import com.project.messenger.entities.Message;
 import com.project.messenger.models.MessageDto;
+import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.MessageService;
 
 @Controller
@@ -26,12 +33,14 @@ public class WebSocketController {
     @MessageMapping("/chat/sendMessage/{chatId}")
     public void sendMessage(
         MessageDto message,
-        @DestinationVariable("chatId") String chatId) {
-        log.info("Recieved message from user: " + "undefined" + ": " + message.getContent() + ", and chatId: " + chatId);
-        
-        messageService.saveMessage(chatId, message);
+        @DestinationVariable("chatId") String chatId,
+        Authentication authentication) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) authentication.getPrincipal();
+        log.info("Recieved message from user: " + principal.getUsername() + ": " + message.getContent() + ", and chatId: " + chatId);
 
-        messagingTemplate.convertAndSend("/topic/messages/" + chatId, message);
+        MessageDto processedMessage = new MessageDto(messageService.saveMessage(chatId, message, principal));
+
+        messagingTemplate.convertAndSend("/topic/messages/" + chatId, processedMessage);
 
         log.info("Sent message to /topic/messages/" + chatId + ": " + message.getContent());
     }

@@ -44,32 +44,41 @@ export default function NewChatScreen() {
         });
     }
 
-    return <div className="Panel-1-Chat">
-        <div className="Panel-2-Find">
+    return <div className="border-box main">
+        <div className="border-box find-user">
             <div className="send-form-block">
                 <div className="find-user-block">
                     find user:
                 </div>
-                <input 
+                <input type="text" name="search" className="send-form-input" placeholder="search for user..."
                     value={prefix}
                     onChange={e => setPrefix(e.target.value)}
                 />
             </div>
         </div>
-        <ul>
-            {foundUsers.map(
-                user => 
-                <li>
-                    <button className="Panel-2-Search-Tile" onClick={() => setUser(user)}>
-                        {user.username}
-                    </button>
-                </li>
-            )}
-        </ul>
-        <div>
-            Selected user:
-            {user.username}
-            <button onClick={createChat}>submit</button>
+        <div className="vertical-margin-4-chat"></div>
+        <div className="border-box search-results">
+            <ul>
+                {foundUsers.map(
+                    user => 
+                    <li className="search-wrap">
+                        <button className="tile search-result" onClick={() => setUser(user)}>
+                            {user.username}
+                        </button>
+                        <div className="vertical-margin-10-tile"></div>
+                    </li>
+                )}
+            </ul>
+        </div>
+        <div className="vertical-margin-4-chat"></div>
+        <div className="select-info">
+            <div className="text-block find-user-block">   
+                Selected user:
+            </div>
+            <div className="text-block selected-user-block">
+                {user.username}
+            </div>
+            <button onClick={createChat} className="fancy-button create-chat-button">Create</button>
         </div>
         {created ? <div>Chat succesfully created! </div> : <></>}
     </div>

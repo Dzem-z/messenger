@@ -29,7 +29,7 @@ public class ChatDto {
             .map(member -> new UserDto(member.getUsername()))
             .collect(Collectors.toSet());
         this.messages = chat.getMessages().stream()
-            .map(message -> new MessageDto(message.getId(), message.getContent(), message.getDateOfPosting()))
+            .map(message -> new MessageDto(message.getId(), message.getContent(), message.getDateOfPosting(), new UserDto(message.getAuthor())))
             .collect(Collectors.toSet());
     }
 

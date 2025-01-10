@@ -4,6 +4,13 @@ import fetchData from "./connectors/fetchData.js";
 
 export default function ChatScreen({ chat }) {
     const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+
+    function handleChangeMessage(e) {
+        console.log(e);
+        setMessage(e.target.value);
+    }
+
     console.log(chat);
     useEffect(() => {
         fetchData(chat._links.messages.href)
@@ -15,6 +22,7 @@ export default function ChatScreen({ chat }) {
                     setMessages([]);
                 }
             });
+        setMessage("");
     }, [chat]);
 
     function handleSendMessage(e) {
@@ -43,18 +51,24 @@ export default function ChatScreen({ chat }) {
 
     useEffect(connectStomp, [connectStomp]);
 
-    return <div className="Panel-1-Chat">
-                <form className="Panel-2-Send" method="post" onSubmit={handleSendMessage}>
+    return <div className="border-box main">
+                <form className="border-box message-box" method="post" onSubmit={handleSendMessage}>
                     <div className="send-form">
                         <div className="send-form-block">
-                            <input type="text" name="message" className="send-form-input" placeholder="enter your message..."></input>
-                            <button id="send" className="send-message" type="submit">Send</button>
+                            <input 
+                                type="text" 
+                                name="message" 
+                                className="send-form-input" 
+                                placeholder="enter your message..."
+                                value={message}
+                                onChange={handleChangeMessage}></input>
+                            <button id="send" className="fancy-button send-message" type="submit">Send</button>
                         </div>
                     </div>
                     
                 </form>
-                <div className="vertical-margin-2-chat"></div>
-                <div className="Panel-2-Messages">
+                <div className="vertical-margin-4-chat"></div>
+                <div className="border-box messages">
                     <table id="conversation" className="table table-striped">
                         <thead>
                         <tr>

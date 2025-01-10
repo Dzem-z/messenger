@@ -15,12 +15,12 @@ function NavBar({ chats }) {
   }, [])
 
   return (<>
-    <div className="Panel-1-Nav">
-      <div className="Panel-2-Nav-User">
+    <div className="border-box main-nav">
+      <div className="Nav-User">
         {user.username}
       </div>
         {<nav> 
-        <div className="links-1">
+        <div className="links">
           <ul >
               <li>
               <NavLink to="/userProfile">Profile</NavLink>
@@ -33,9 +33,10 @@ function NavBar({ chats }) {
               </li>
           </ul>
         </div>
-        <div className="Panel-2-Nav">
+        <div className="Chat-Nav">
           <ChatBar 
-            chats={chats}/>
+            chats={chats}
+            userName={user.username}/>
         </div>
         </nav>}
     </div>

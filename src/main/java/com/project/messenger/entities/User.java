@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +48,10 @@ public class User {
     @ManyToMany(mappedBy="members",
         fetch = FetchType.EAGER)
     private Set<Chat> chats;
+
+    @OneToMany(mappedBy="author",
+        fetch = FetchType.EAGER)
+    private Set<Message> messages;
 
     public User() {
         username = null;

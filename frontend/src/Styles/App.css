@@ -5,25 +5,25 @@
 }
 
 
-[class*="Panel-"] {
-}
-
-.Panel-1-Nav {
-  height: 100%;
+.border-box {
   background-color: rgb(255, 255, 255);
-  margin-right: 2%;
   border-radius: 8px;
-  box-sizing: border-box;
-  width: 28%; /* 30% of the container's width */
-  font-size: 30px;
   box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
 }
 
-.Panel-1-Nav > *:first-child {
+.border-box.main-nav {
+  height: 100%;
+  margin-right: 2%;
+  box-sizing: border-box;
+  width: 28%; /* 30% of the container's width */
+  font-size: 30px;
+}
+
+.border-box.main-nav > *:first-child {
   padding: 5% 10% 5% 10%;
 }
 
-.Panel-2-Nav-User {
+.Nav-User {
   margin: 5%;
   width: 50%;
   border-radius: 8px;
@@ -50,22 +50,24 @@
 }
 
 ul {
+  width: 100%;
+  height: 100%;
   list-style-type: none;  /* Removes bullet points */
   padding-left: 0;         /* Removes the default padding */
 }
 
-.links-1 ul {
+.links ul {
   list-style-type: none;  /* Removes bullet points */
   padding-left: 10%;         /* Removes the default padding */
 }
 
-.links-1 a {
+.links a {
 	color: var(--primary-color);
   position: relative;
   text-decoration: none;
 }
 
-.links-1 a::before {
+.links a::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -79,18 +81,16 @@ ul {
   transition: transform .3s ease-in-out;
 }
 
-.links-1 a:hover::before {
+.links a:hover::before {
   transform-origin: left;
   transform: scaleX(1);
 }
 
-.Panel-2-Nav {
+.Chat-Nav {
   width: 100%;
 }
 
-.chat-tile {
-  margin: 5%;
-  width: 90%;
+.tile {
   padding: 5%;
   align-items: center;
   background-color: #ffffff;
@@ -106,9 +106,7 @@ ul {
   font-weight: 700;
   justify-content: center;
   line-height: 1;
-  /*margin: 0;*/
   outline: none;
-  /*padding: 1rem 1.2rem;*/
   text-align: center;
   text-decoration: none;
   transition: box-shadow .2s,-webkit-box-shadow .2s;
@@ -119,48 +117,71 @@ ul {
   touch-action: manipulation;
 }
 
-.chat-tile:hover {
+.tile.chat {
+  margin: 5%;
+  width: 90%;
+  padding: 5%;
+}
+
+.tile.chat.selected {
   box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
 }
 
-.Panel-1-Chat {
-  height: 100%;
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
+.tile:hover {
   box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
+}
+
+.border-box.main {
+  height: 100%;
   width:70%;
   box-sizing: border-box;
   padding: 2%;
 }
 
-.Panel-2-Send {
+.border-box.message-box {
   width:100%;
   height:16%;
   box-sizing: border-box;
   padding: 1%;
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
 }
 
-.Panel-2-Messages {
+.border-box.messages {
   width:100%;
   height:80%;
   box-sizing: border-box;
   padding: 2%;
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
 }
 
-.Panel-2-Find {
+.border-box.find-user {
   width:100%;
-  height:16%;
+  height:14%;
   box-sizing: border-box;
   padding: 1%;
-  background-color: rgb(255, 255, 255);
-  border-radius: 8px;
-  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
+}
+
+.border-box.search-results {
+  width:100%;
+  height:73%;
+  overflow: scroll;
+  box-sizing: border-box;
+  padding: 4%;
+}
+
+.search-wrap {
+  height: 15%;
+}
+
+.tile.search-result {
+  width: 90%;
+  padding: 1%;
+  height: 90%;
+}
+
+.select-info {
+  width:100%;
+  height:5%;
+  display:flex;
+  flex-direction: row;
 }
 
 .send-form {
@@ -175,13 +196,36 @@ ul {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
+  padding: 2%;
   width:100%;
   height:100%;
 }
 
+.text-block {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 24px;
+}
 
-/* CSS */
-.send-message {
+.text-block.find-user-block {
+  margin-left: 2%;
+  width: 13%;
+  font-size: 24px;
+  justify-content: center; 
+}
+
+.text-block.selected-user-block {
+  margin-left: 2%;
+  width: 70%;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.fancy-button {
   align-items: center;
   appearance: none;
   background-clip: padding-box;
@@ -199,12 +243,10 @@ ul {
   font-weight: 800;
   justify-content: center;
   line-height: 24px;
-  height: 100%;
-  width: 15%;
   outline: none;
   overflow: visible;
   box-sizing: border-box;
-  padding: 2%;
+  padding: 1%;
   pointer-events: auto;
   position: relative;
   text-align: center;
@@ -218,13 +260,12 @@ ul {
   z-index: 0;
 }
 
-
-.send-message:before,
-.send-message:after {
+.fancy-button:before,
+.fancy-button:after {
   border-radius: 80px;
 }
 
-.send-message:before {
+.fancy-button:before {
   background-image: linear-gradient(92.83deg, var(--primary-color) 0, var(--primary-color) 100%);
   content: "";
   display: block;
@@ -237,7 +278,7 @@ ul {
   z-index: -2;
 }
 
-.send-message:after {
+.fancy-button:after {
   background-color: initial;
   background-image: linear-gradient(#ffffff 0, #ffffff 100%);
   bottom: 4px;
@@ -252,15 +293,15 @@ ul {
   z-index: -1;
 }
 
-.send-message:hover:not(:disabled):before {
+.fancy-button:hover:not(:disabled):before {
   background: linear-gradient(92.83deg, var(--secondary-color) 0%, var(--secondary-color) 100%);
 }
 
-.send-message:hover {
+.fancy-button:hover {
   color: white;
 }
 
-.send-message:hover:not(:disabled):after {
+.fancy-button:hover:not(:disabled):after {
   bottom: 0;
   left: 0;
   right: 0;
@@ -270,16 +311,16 @@ ul {
   color: #ffffff;
 }
 
-.send-message:active:not(:disabled) {
+.fancy-button:active:not(:disabled) {
   color: #ccc;
 }
 
-.send-message:active:not(:disabled):before {
+.fancy-button:active:not(:disabled):before {
   /*background-image: linear-gradient(0deg, #ffffff, #ffffff), linear-gradient(92.83deg, #ff7426 0, #f93a13 100%);*/
   color: white;
 }
 
-.send-message:active:not(:disabled):after {
+.fancy-button:active:not(:disabled):after {
   background-image: linear-gradient(#ffffff 0, #ffffff 100%);
   bottom: 4px;
   left: 4px;
@@ -287,9 +328,25 @@ ul {
   top: 4px;
 }
 
-.send-message:disabled {
+.fancy-button:disabled {
   cursor: default;
   opacity: .24;
+}
+
+.fancy-button.create-chat-button {
+  height: 100%;
+  width: 15%;
+  padding: 1%;
+}
+
+
+
+
+/* CSS */
+.fancy-button.send-message {
+  height: 100%;
+  width: 15%;
+  padding: 2%;
 }
 
 .send-form-input {
@@ -325,6 +382,10 @@ input[type="text"] {
   transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
 }
 
-.vertical-margin-2-chat {
+.vertical-margin-4-chat {
   height:4%;
+}
+
+.vertical-margin-10-tile {
+  height:10%;
 }

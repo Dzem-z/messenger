@@ -5,6 +5,7 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,10 +34,10 @@ public class ChatService {
     }
 
     public Chat createChat(ChatDto chat) {
-        SecureRandom random = new SecureRandom();
-        byte[] token = new byte[10];
-        random.nextBytes(token);
-        String idToken = new String(Base64.getEncoder().encode(token));
+        String idToken;
+        do {
+            idToken = UUID.randomUUID().toString();
+        } while (chatRepository.findByIdToken(idToken).isPresent());
         System.out.println(idToken);
 
         Set<User> members = chat.getMembers().stream().map(user -> {

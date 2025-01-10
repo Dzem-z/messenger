@@ -39,16 +39,24 @@ public class Message {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinTable(
+        name = "users_messages",
+        joinColumns = @JoinColumn(name = "messageId"),
+        inverseJoinColumns = @JoinColumn(name = "chatId"))
+    private User author;
+
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinTable(
         name = "chats_messages",
         joinColumns = @JoinColumn(name = "messageId"),
         inverseJoinColumns = @JoinColumn(name = "chatId"))
     private Chat chat;
 
-    public Message(int id, String content, OffsetDateTime dateOfPosting, Chat chat) {
+    public Message(int id, String content, OffsetDateTime dateOfPosting, Chat chat, User author) {
         this.id = id;
         this.content = content;
         this.dateOfPosting = dateOfPosting;
         this.chat = chat;
+        this.author = author;
     };
 
     public int getId() {
@@ -65,5 +73,9 @@ public class Message {
 
     public OffsetDateTime getDateOfPosting() {
         return dateOfPosting;
+    }
+
+    public User getAuthor() {
+        return author;
     }
 }
