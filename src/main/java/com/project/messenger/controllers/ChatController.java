@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.messenger.assemblers.ChatDtoModelAssembler;
+import com.project.messenger.entities.Chat;
 import com.project.messenger.entities.User;
 import com.project.messenger.models.ChatDto;
 import com.project.messenger.security.entities.SecurityUser;
@@ -42,19 +44,19 @@ public class ChatController {
 
     
     @GetMapping("/api/chats")
-    public CollectionModel<EntityModel<ChatDto>> all() throws UserPrincipalNotFoundException {
+    public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value="prefix", defaultValue="") String prefix) throws UserPrincipalNotFoundException {
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("principal: " + principal);
 
         User user = userService.findCurrentUser(principal);
 
-        List<EntityModel<ChatDto>> chats = chatService.findAllChatsByUser(user).stream()
+        List<EntityModel<ChatDto>> chats = chatService.findAllChatsWithPrefixByUser(prefix, user).stream()
             .map(ChatDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
 
         return CollectionModel.of(chats,
-            linkTo(methodOn(ChatController.class).all()).withSelfRel(),
+            linkTo(methodOn(ChatController.class).all(prefix)).withSelfRel(),
             linkTo(methodOn(ChatController.class).create(new ChatDto())).withRel("create"));
     }
 
@@ -77,9 +79,16 @@ public class ChatController {
     }
 
     @DeleteMapping("/api/chats/{id}/leave")
-    public ResponseEntity<?> leave(@PathVariable int id) {
+    public ResponseEntity<?> leave(@PathVariable int id) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
+        Chat requestedChat = chatService.findChatbyId(id);
+
+        //ChatDto updatedChat = new ChatDto(chatService.removeUserFromChat(user, requestedChat));
         
-        return ResponseEntity.ok("ok");
+        chatService.deleteChat(requestedChat);
+
+        return ResponseEntity.ok("");
     }
 
     

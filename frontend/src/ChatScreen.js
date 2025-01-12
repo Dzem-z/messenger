@@ -16,8 +16,8 @@ export default function ChatScreen({ chat }) {
         fetchData(chat._links.messages.href)
             .then(result => {
                 if(result._embedded != undefined) {
-                    console.log(result._embedded.messageDtoes.map(message => message.content));
-                    setMessages(result._embedded.messageDtoes.map(message => message.content));
+                    console.log(result._embedded.messageDtoes);
+                    setMessages(result._embedded.messageDtoes);
                 } else {
                     setMessages([]);
                 }
@@ -32,14 +32,14 @@ export default function ChatScreen({ chat }) {
         const formData = new FormData(form);
     
         const formJson = Object.fromEntries(formData.entries());
-    
+        setMessage("");
         sendName(chat.idToken, formJson.message);
     
         //console.log(formJson);
     }
 
     const recieveMessage = useCallback((message) => {
-        setMessages((prevMessages) => prevMessages.concat(JSON.parse(message.body).content));
+        setMessages((prevMessages) => prevMessages.concat(JSON.parse(message.body)));
         
     }, []);
 
@@ -76,9 +76,9 @@ export default function ChatScreen({ chat }) {
                         </tr>
                         </thead>
                         <tbody id="greetings">
-                            {messages.map((mes, index) => 
+                            {messages.map((message, index) => 
                                 <tr key={index}>
-                                    <td>{mes}</td>
+                                    <td><b>{message.author.username}: </b>{message.content}</td>
                                 </tr>
                             )}
                         </tbody>

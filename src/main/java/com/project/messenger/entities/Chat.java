@@ -50,7 +50,7 @@ public class Chat {
         inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> members;
 
-    @OneToMany(mappedBy="chat",
+    @OneToMany(mappedBy="chat", cascade = CascadeType.REMOVE,
         fetch = FetchType.EAGER)
     private Set<Message> messages;
 

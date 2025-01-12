@@ -22,7 +22,7 @@ public class ChatDtoModelAssembler implements RepresentationModelAssembler<ChatD
         try {
             return EntityModel.of(chat,
                 linkTo(methodOn(ChatController.class).one(chat.getId())).withSelfRel(),
-                linkTo(methodOn(ChatController.class).all()).withRel("chats"),
+                linkTo(methodOn(ChatController.class).all("")).withRel("chats"),
                 linkTo(methodOn(ChatController.class).leave(chat.getId())).withRel("leave"),
                 linkTo(methodOn(MessageController.class).all(chat.getId())).withRel("messages"));
         } catch (UserPrincipalNotFoundException e) {

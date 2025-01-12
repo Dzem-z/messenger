@@ -1,7 +1,5 @@
 package com.project.messenger.services;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,8 +27,8 @@ public class ChatService {
         this.userRepository = userRepository;
     }
 
-    public List<Chat> findAllChatsByUser(User user) {
-        return chatRepository.findAllByMembers_username(user.getUsername());
+    public List<Chat> findAllChatsWithPrefixByUser(String prefix, User user) {
+        return chatRepository.findAllByPrefixAndMembers_username(prefix, user.getUsername());
     }
 
     public Chat createChat(ChatDto chat) {
@@ -55,6 +53,16 @@ public class ChatService {
         System.out.println("chat: " + requestedChat);
 
         return chatRepository.save(requestedChat);
+    }
+
+    public Chat removeUserFromChat(User user, Chat chat) {
+        chat.getMembers().remove(user);
+        return chatRepository.save(chat); 
+    }
+
+    public void deleteChat(Chat chat) {
+
+        chatRepository.delete(chat);
     }
 
     public Chat findChatbyId(int id) {

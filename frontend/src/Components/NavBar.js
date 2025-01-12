@@ -3,16 +3,10 @@ import ChatBar from "./ChatBar";
 import { getUser } from "../connectors/User.js";
 import { useEffect, useState } from "react";
 
-function NavBar({ chats }) {
-  const [user, setUser] = useState({username: "noUser"})
+function NavBar({ chats, user }) {
+  //const [user, setUser] = useState({username: "noUser"})
 
-  useEffect(() => {
-    getUser().then (
-      user => {
-        setUser(user);
-      }
-    )
-  }, [])
+  
 
   return (<>
     <div className="border-box main-nav">
@@ -26,7 +20,7 @@ function NavBar({ chats }) {
               <NavLink to="/userProfile">Profile</NavLink>
               </li>
               <li>
-              <NavLink to="/home">Chat</NavLink>
+              <NavLink to="/leaveChat">Leave chat</NavLink>
               </li>
               <li>
                 <NavLink to="/newChat">Create new chat</NavLink>

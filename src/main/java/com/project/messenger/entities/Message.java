@@ -38,10 +38,9 @@ public class Message {
     private OffsetDateTime dateOfPosting;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinTable(
-        name = "users_messages",
-        joinColumns = @JoinColumn(name = "messageId"),
-        inverseJoinColumns = @JoinColumn(name = "chatId"))
+    @JoinColumn(
+        name = "user_id",
+        nullable = false)
     private User author;
 
     @ManyToOne(cascade = CascadeType.MERGE)

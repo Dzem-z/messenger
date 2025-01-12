@@ -2,7 +2,6 @@ package com.project.messenger.websocket;
 
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +9,8 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import com.project.messenger.entities.Message;
 import com.project.messenger.models.MessageDto;
 import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.MessageService;

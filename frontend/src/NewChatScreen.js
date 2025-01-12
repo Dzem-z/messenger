@@ -14,7 +14,7 @@ export default function NewChatScreen() {
         fetchData("http://" + host + "/api/users?prefix=" + prefix)
             .then(userList => {
                 console.log(userList);
-                setFoundUsers(userList._embedded.userDtoes)
+                setFoundUsers(userList._embedded?.userDtoes ?? [])
             })
     }, [prefix]);
 

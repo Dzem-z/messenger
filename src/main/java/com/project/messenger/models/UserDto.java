@@ -12,16 +12,21 @@ import lombok.Getter;
 @Getter
 public class UserDto {
     
-    private String username;
+    private final String username;
     //private Set<Authority> authorities;
     private Set<ChatDto> chats;
 
     public UserDto(User user) {
-        this.username = user.getUsername();
-        //this.authorities = user.getAuthorities();
-        this.chats = user.getChats().stream()
-            .map(chat -> new ChatDto(chat.getName()))
-            .collect(Collectors.toSet());
+        if(user == null) {
+            this.username = null;
+            this.chats = null;
+        } else {
+            this.username = user.getUsername();
+            //this.authorities = user.getAuthorities();
+            this.chats = user.getChats().stream()
+                .map(chat -> new ChatDto(chat.getName()))
+                .collect(Collectors.toSet());
+        }
     }
 
     public UserDto(String username) {

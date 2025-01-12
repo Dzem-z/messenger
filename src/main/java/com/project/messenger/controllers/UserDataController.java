@@ -38,7 +38,7 @@ public class UserDataController {
     }
 
     @GetMapping("/api/users")
-    public CollectionModel<EntityModel<UserDto>> findUsersByPrefix(@RequestParam("prefix") String prefix) {
+    public CollectionModel<EntityModel<UserDto>> findUsersByPrefix(@RequestParam(value="prefix", defaultValue="") String prefix) {
         List<EntityModel<UserDto>> users = userService.findUsersByPrefix(prefix).stream()
             .map(assembler::toModel)
             .collect(Collectors.toList());
