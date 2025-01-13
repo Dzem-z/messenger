@@ -18,7 +18,7 @@ Then execute the [prepare_database](prepare_database.sql) script. For example: <
 ```
 mysql -u root -h 127.0.0.1 -P 3306 -p < prepare_database.sql
 ```
-Next, to build frontend first run:
+Next, to build frontend, in the directory frontend run:
 ```
 npm install
 ```
