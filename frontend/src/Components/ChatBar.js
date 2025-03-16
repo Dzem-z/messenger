@@ -1,7 +1,6 @@
 
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import processChatName from "../process/ProcessChatName";
 
 function ChatBar({ chats, userName }) {
     const [selectedChat, setSelectedChat] = useState(null);
@@ -16,7 +15,7 @@ function ChatBar({ chats, userName }) {
                 
                     <NavLink to={"/chat/" + chat.idToken} onClick={() => setSelectedChat(index)}>
                         <div className={`tile chat ${selectedChat == index ? "selected" : ""}`}>
-                            {processChatName(chat, userName)}
+                            {chat.name}
                         </div>
                     </NavLink>
                 
