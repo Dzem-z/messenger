@@ -27,8 +27,8 @@ public class ChatService {
         this.userRepository = userRepository;
     }
 
-    public List<Chat> findAllChatsWithPrefixByUser(String prefix, User user) {
-        return chatRepository.findAllByPrefixAndMembers_username(prefix, user.getUsername());
+    public List<Chat> findAllPublicChatsWithPrefixByUser(String prefix, User user) {
+        return chatRepository.findAllPublicByPrefixAndMembers_username(prefix, user.getUsername());
     }
 
     public Chat createChat(ChatDto chat) {
@@ -43,12 +43,15 @@ public class ChatService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found " + user.getUsername()));
         }).collect(Collectors.toSet());
 
+        //TODO: check if private chat contains two users.
+
         Chat requestedChat = new Chat(
             0, 
             chat.getName(),
             idToken,
             members,
-            new HashSet<>());
+            new HashSet<>(),
+            chat.getIsPrivate());
 
         System.out.println("chat: " + requestedChat);
 
@@ -61,7 +64,6 @@ public class ChatService {
     }
 
     public void deleteChat(Chat chat) {
-
         chatRepository.delete(chat);
     }
 

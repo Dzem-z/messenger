@@ -21,6 +21,8 @@ public class ChatDto {
 
     private Set<MessageDto> messages;
 
+    private boolean isPrivate;
+
     public ChatDto(Chat chat) {
         this.id = chat.getId();
         this.name = chat.getName();
@@ -31,6 +33,7 @@ public class ChatDto {
         this.messages = chat.getMessages().stream()
             .map(message -> new MessageDto(message.getId(), message.getContent(), message.getDateOfPosting(), new UserDto(message.getAuthor())))
             .collect(Collectors.toSet());
+        this.isPrivate = chat.getIsPrivate();
     }
 
     public ChatDto(String name) {
@@ -55,5 +58,9 @@ public class ChatDto {
 
     public String getName() {
         return name;
+    }
+
+    public boolean getIsPrivate() {
+        return isPrivate;
     }
 }
