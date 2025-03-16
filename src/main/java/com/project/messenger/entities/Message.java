@@ -35,6 +35,8 @@ public class Message {
 
     private String content;
 
+    
+
     private OffsetDateTime dateOfPosting;
 
     @ManyToOne(cascade = CascadeType.MERGE)

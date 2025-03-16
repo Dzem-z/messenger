@@ -37,10 +37,11 @@ public class Chat {
 
     private String name;
 
+    private boolean isPrivate;
+
     @Column(unique=true,
         nullable=false)
     private String idToken;
-    
     
     @ManyToMany(fetch = FetchType.EAGER,
         cascade = CascadeType.MERGE)
@@ -50,13 +51,19 @@ public class Chat {
         inverseJoinColumns = @JoinColumn(name = "userId"))
     private Set<User> members;
 
-    @OneToMany(mappedBy="chat", cascade = CascadeType.REMOVE,
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE,
         fetch = FetchType.EAGER)
     private Set<Message> messages;
 
     public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages) {
+        this(id, name, idToken, members, messages, false);
+    }
+
+
+    public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages, boolean isPrivate) {
         this.id = id;
         this.name = name;
+        this.isPrivate = isPrivate;
         this.idToken = idToken;
         this.members = members;
         this.messages = messages;
@@ -80,6 +87,10 @@ public class Chat {
 
     public Set<Message> getMessages() {
         return messages;
+    }
+
+    public boolean getIsPrivate() {
+        return isPrivate;
     }
 
     @Override

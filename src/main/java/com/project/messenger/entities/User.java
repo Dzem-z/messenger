@@ -5,7 +5,6 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,10 +46,10 @@ public class User {
     private Set<Authority> authorities;
 
     @ManyToMany(mappedBy="members",
-        cascade = CascadeType.REMOVE,
         fetch = FetchType.EAGER)
     private Set<Chat> chats;
 
+    
     @OneToMany(mappedBy="author",
         fetch = FetchType.EAGER)
     private Set<Message> messages;
