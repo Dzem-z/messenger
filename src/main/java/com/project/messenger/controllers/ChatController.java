@@ -3,6 +3,7 @@ package com.project.messenger.controllers;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -19,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.messenger.advice.ChatNotFoundAdvice;
 import com.project.messenger.assemblers.ChatDtoModelAssembler;
 import com.project.messenger.entities.Chat;
 import com.project.messenger.entities.User;
+import com.project.messenger.exceptions.ChatNotFoundException;
 import com.project.messenger.models.ChatDto;
+import com.project.messenger.models.UserDto;
 import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.ChatService;
 import com.project.messenger.services.UserService;
@@ -45,12 +49,18 @@ public class ChatController {
     
     @GetMapping("/api/chats")
     public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value="prefix", defaultValue="") String prefix) throws UserPrincipalNotFoundException {
+        /*
+         * Returns all chats of which the user is a member.
+         */
+
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         System.out.println("principal: " + principal);
 
         User user = userService.findCurrentUser(principal);
 
-        List<EntityModel<ChatDto>> chats = chatService.findAllPublicChatsWithPrefixByUser(prefix, user).stream()
+        List<EntityModel<ChatDto>> chats = Stream.concat(
+            chatService.findAllPublicChatsWithPrefixByUser(prefix, user).stream(),
+            chatService.findAllPrivateChatsWithPrefixByUser(prefix, user).stream())
             .map(ChatDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
@@ -62,7 +72,16 @@ public class ChatController {
 
     @GetMapping("/api/chats/{id}")
     public EntityModel<ChatDto> one(@PathVariable int id) {
+        /*
+         * Returns chat with specified id if the user is a member.
+         */
+
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         ChatDto chat = new ChatDto(chatService.findChatbyId(id));
+
+        if(!(chat.getMembers().contains(new UserDto(principal.getUsername()))))
+            throw new ChatNotFoundException("User is not allowed to retrieve chat with id: " + id);
 
         return assembler.toModel(chat);
     }
@@ -70,6 +89,11 @@ public class ChatController {
     //@CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/api/chats/create")
     public ResponseEntity<EntityModel<ChatDto>> create(@RequestBody ChatDto chat) {
+
+        /*
+         * Creates a chat with fields specified by chatDto.
+         */
+
         System.out.println("submitted: " + chat);
         ChatDto newChat = new ChatDto(chatService.createChat(chat));
 
@@ -80,6 +104,11 @@ public class ChatController {
 
     @DeleteMapping("/api/chats/{id}/leave")
     public ResponseEntity<?> leave(@PathVariable int id) throws UserPrincipalNotFoundException {
+
+        /*
+         * Removes user from the chat with specified id.
+         */
+
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findCurrentUser(principal);
         Chat requestedChat = chatService.findChatbyId(id);
