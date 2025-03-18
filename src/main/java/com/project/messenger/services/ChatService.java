@@ -31,6 +31,10 @@ public class ChatService {
         return chatRepository.findAllPublicByPrefixAndMembers_username(prefix, user.getUsername());
     }
 
+    public List<Chat> findAllPrivateChatsWithPrefixByUser(String prefix, User user) {
+        return chatRepository.findAllPrivateByPrefixAndMembers_username(prefix, user.getUsername());
+    }
+
     public Chat createChat(ChatDto chat) {
         String idToken;
         do {

@@ -50,7 +50,7 @@ public class ChatController {
 
         User user = userService.findCurrentUser(principal);
 
-        List<EntityModel<ChatDto>> chats = chatService.findAllChatsWithPrefixByUser(prefix, user).stream()
+        List<EntityModel<ChatDto>> chats = chatService.findAllPublicChatsWithPrefixByUser(prefix, user).stream()
             .map(ChatDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
