@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.project.messenger.entities.Chat;
 import com.project.messenger.entities.User;
 import com.project.messenger.exceptions.ChatNotFoundException;
+import com.project.messenger.exceptions.InconsistentChatException;
 import com.project.messenger.models.ChatDto;
 import com.project.messenger.repositories.ChatRepository;
 import com.project.messenger.repositories.UserRepository;
@@ -47,7 +48,8 @@ public class ChatService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found " + user.getUsername()));
         }).collect(Collectors.toSet());
 
-        //TODO: check if private chat contains two users.
+        if(chat.getIsPrivate() && chat.getMembers().size() != 2) //Check if private chat contains exactly two users.
+            throw new InconsistentChatException("Cannot create private chat with " + chat.getMembers().size() + " users");
 
         Chat requestedChat = new Chat(
             0, 
