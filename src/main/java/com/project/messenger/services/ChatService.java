@@ -2,6 +2,7 @@ package com.project.messenger.services;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -64,9 +65,14 @@ public class ChatService {
         return chatRepository.save(requestedChat);
     }
 
-    public Chat removeUserFromChat(User user, Chat chat) {
+    public Optional<Chat> removeUserFromChat(User user, Chat chat) {
         chat.getMembers().remove(user);
-        return chatRepository.save(chat); 
+
+        if(chat.getMembers().size() == 0 || (chat.getIsPrivate() && chat.getMembers().size() != 2)) {
+            deleteChat(chat);
+            return Optional.empty();
+        } else
+            return Optional.of(chatRepository.save(chat)); 
     }
 
     public void deleteChat(Chat chat) {

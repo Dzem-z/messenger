@@ -84,9 +84,7 @@ public class ChatController {
         User user = userService.findCurrentUser(principal);
         Chat requestedChat = chatService.findChatbyId(id);
 
-        //ChatDto updatedChat = new ChatDto(chatService.removeUserFromChat(user, requestedChat));
-        
-        chatService.deleteChat(requestedChat);
+        chatService.removeUserFromChat(user, requestedChat);
 
         return ResponseEntity.ok("");
     }
