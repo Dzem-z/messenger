@@ -30,14 +30,23 @@ public class ChatService {
     }
 
     public List<Chat> findAllPublicChatsWithPrefixByUser(String prefix, User user) {
+        /*
+         * Returns all public chats that match prefix and which the user is a member.
+         */
         return chatRepository.findAllPublicByPrefixAndMembers_username(prefix, user.getUsername());
     }
 
     public List<Chat> findAllPrivateChatsWithPrefixByUser(String prefix, User user) {
+        /*
+         * Returns all private chats that match prefix and which the user is a member.
+         */
         return chatRepository.findAllPrivateByPrefixAndMembers_username(prefix, user.getUsername());
     }
 
     public Chat createChat(ChatDto chat) {
+        /*
+         * Creates a chat.
+         */
         String idToken;
         do {
             idToken = UUID.randomUUID().toString();
@@ -66,6 +75,9 @@ public class ChatService {
     }
 
     public Optional<Chat> removeUserFromChat(User user, Chat chat) {
+        /*
+         * Removes the user from the chat and if the user count doesn't satisfy predicate deletes the chat.
+         */
         chat.getMembers().remove(user);
 
         if(chat.getMembers().size() == 0 || (chat.getIsPrivate() && chat.getMembers().size() != 2)) {
@@ -76,10 +88,16 @@ public class ChatService {
     }
 
     public void deleteChat(Chat chat) {
+        /*
+         * Deletes the chat.
+         */
         chatRepository.delete(chat);
     }
 
     public Chat findChatbyId(int id) {
+        /*
+         * Finds chat by the id.
+         */
         return chatRepository.findById(id)
             .orElseThrow(() -> new ChatNotFoundException("No chat with id: " + id));
     }
