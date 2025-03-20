@@ -48,7 +48,7 @@ public class ChatController {
 
     
     @GetMapping("/api/chats")
-    public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value="prefix", defaultValue="") String prefix) throws UserPrincipalNotFoundException {
+    public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value = "prefix", defaultValue = "") String prefix) throws UserPrincipalNotFoundException {
         /*
          * Returns all chats of which the user is a member.
          */
@@ -68,6 +68,50 @@ public class ChatController {
         return CollectionModel.of(chats,
             linkTo(methodOn(ChatController.class).all(prefix)).withSelfRel(),
             linkTo(methodOn(ChatController.class).create(new ChatDto())).withRel("create"));
+    }
+
+    @GetMapping("/api/privateChats")
+    public CollectionModel<EntityModel<ChatDto>> allPrivate(@RequestParam(value = "prefix", defaultValue = "") String prefix) throws UserPrincipalNotFoundException {
+        /*
+         * Returns all private chats of which the user is a member.
+         */
+
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal: " + principal);
+
+        User user = userService.findCurrentUser(principal);
+
+        List<EntityModel<ChatDto>> chats = chatService.findAllPrivateChatsWithPrefixByUser(prefix, user).stream()
+            .map(ChatDto::new)
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(chats,
+            linkTo(methodOn(ChatController.class).allPrivate(prefix)).withSelfRel(),
+            linkTo(methodOn(ChatController.class).create(new ChatDto())).withRel("create"));
+        
+    }
+
+    @GetMapping("/api/publicChats")
+    public CollectionModel<EntityModel<ChatDto>> allPublic(@RequestParam(value = "prefix", defaultValue = "") String prefix) throws UserPrincipalNotFoundException {
+        /*
+         * Returns all public chats of which the user is a member.
+         */
+
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal: " + principal);
+
+        User user = userService.findCurrentUser(principal);
+
+        List<EntityModel<ChatDto>> chats = chatService.findAllPublicChatsWithPrefixByUser(prefix, user).stream()
+            .map(ChatDto::new)
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(chats,
+            linkTo(methodOn(ChatController.class).allPrivate(prefix)).withSelfRel(),
+            linkTo(methodOn(ChatController.class).create(new ChatDto())).withRel("create"));
+        
     }
 
     @GetMapping("/api/chats/{id}")
