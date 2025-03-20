@@ -1,15 +1,15 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import './Styles/App.css';
-import ChatScreen from './ChatScreen';
-import EmptyChatScreen from './EmptyChatScreen';
+import ChatScreen from './screens/ChatScreen';
+import EmptyChatScreen from './screens/EmptyChatScreen';
 import NavBar from "./Components/NavBar";
 import fetchData from './connectors/fetchData';
-import NewChatScreen from './NewChatScreen';
+import NewChatScreen from './screens/NewChatScreen';
 import { host } from "./const";
 import { getUser } from './connectors/User';
-import LeaveChatScreen from './LeaveChatScreen';
-import ProfileScreen from './ProfileScreen';
+import LeaveChatScreen from './screens/LeaveChatScreen';
+import ProfileScreen from './screens/ProfileScreen';
 
 function App() {
   const [chats, setChats] = useState([]);
