@@ -220,6 +220,12 @@ ul {
   font-size: 24px;
 }
 
+.text-block.navChat-block {
+  margin: 2%;
+  width: 100%;
+  justify-content: center;
+}
+
 .text-block.find-block {
   margin-left: 2%;
   width: 13%;
