@@ -4,7 +4,8 @@ import { NavLink } from "react-router-dom";
 import processChatName from "../process/ProcessChatName";
 
 function ChatBar({ chats, userName }) {
-    const [selectedChat, setSelectedChat] = useState(null);
+    const [selectedPrivateChat, setSelectedPrivateChat] = useState(null);
+    const [selectedPublicChat, setSelectedPublicChat] = useState(null);
 
     console.log(chats);
     
@@ -15,9 +16,11 @@ function ChatBar({ chats, userName }) {
             <ul>
             {chats.filter((chat) => chat.isPrivate).map((chat, index) =>
                 <li key={index}>
-                    <NavLink to={"/chat/" + chat.idToken} onClick={() => setSelectedChat(index)}>
-                        <div className={`tole chat ${selectedChat == index ? "selected" : ""}`}>
-                            {processChatName(chat.name)}
+                    <NavLink to={"/chat/" + chat.idToken} onClick={() => {
+                        setSelectedPrivateChat(index)
+                        setSelectedPublicChat(null)}}>
+                        <div className={`tile chat ${selectedPrivateChat == index ? "selected" : ""}`}>
+                            {processChatName(chat, userName)}
                         </div>
                     </NavLink>
                 </li>)}
@@ -27,8 +30,10 @@ function ChatBar({ chats, userName }) {
                 
             {chats.filter((chat) => !chat.isPrivate).map((chat, index) =>
                 <li key={index}>
-                    <NavLink to={"/chat/" + chat.idToken} onClick={() => setSelectedChat(index)}>
-                        <div className={`tile chat ${selectedChat == index ? "selected" : ""}`}>
+                    <NavLink to={"/chat/" + chat.idToken} onClick={() => {
+                        setSelectedPublicChat(index)
+                        setSelectedPrivateChat(null)}}>
+                        <div className={`tile chat ${selectedPublicChat == index ? "selected" : ""}`}>
                             {chat.name}
                         </div>
                     </NavLink>
