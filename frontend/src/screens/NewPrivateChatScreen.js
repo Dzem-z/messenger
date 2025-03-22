@@ -4,7 +4,7 @@ import { getUser } from "../connectors/User";
 import axios from "axios";
 import { host } from "../const";
 
-export default function NewChatScreen() {
+export default function NewPrivateChatScreen() {
     const [user, setUser] = useState({username: ""});
     const [prefix, setPrefix] = useState("");
     const [foundUsers, setFoundUsers] = useState([]);
@@ -26,7 +26,8 @@ export default function NewChatScreen() {
                     members: [
                         currentUser,
                         user
-                    ]
+                    ],
+                    isPrivate: true,
                 });
                 return post("http://" + host + "/api/chats/create", 
                     {
@@ -34,7 +35,8 @@ export default function NewChatScreen() {
                         members: [
                             currentUser,
                             user
-                        ]
+                        ],
+                        isPrivate: true,
                     }
                 )
             }

@@ -5,7 +5,7 @@ import ChatScreen from './screens/ChatScreen';
 import EmptyChatScreen from './screens/EmptyChatScreen';
 import NavBar from "./Components/NavBar";
 import fetchData from './connectors/fetchData';
-import NewChatScreen from './screens/NewChatScreen';
+import NewPrivateChatScreen from './screens/NewPrivateChatScreen';
 import { host } from "./const";
 import { getUser } from './connectors/User';
 import LeaveChatScreen from './screens/LeaveChatScreen';
@@ -44,7 +44,7 @@ function App() {
         }
         <Route path="/userProfile" element={<ProfileScreen />} />
         <Route path="/leaveChat" element={<LeaveChatScreen user={user} chats={chats} />} />
-        <Route path="/newChat" element={<NewChatScreen />} />
+        <Route path="/newPrivateChat" element={<NewPrivateChatScreen />} />
         {chats.map(chat => 
           <Route path={"/chat/" + chat.idToken} element={<ChatScreen chat={chat} />} />
         )}
