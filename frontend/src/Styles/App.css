@@ -187,6 +187,10 @@ ul {
   height: 90%;
 }
 
+.tile.search-result.selected {
+  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
+}
+
 .select-info {
   width:100%;
   height:5%;

@@ -23,6 +23,9 @@ function NavBar({ chats, user }) {
               <NavLink to="/leaveChat">Leave chat</NavLink>
               </li>
               <li>
+                <NavLink to="/newPublicChat">Create new public chat</NavLink>
+              </li>
+              <li>
                 <NavLink to="/newPrivateChat">Create new private chat</NavLink>
               </li>
           </ul>

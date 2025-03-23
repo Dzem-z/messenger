@@ -10,6 +10,7 @@ import { host } from "./const";
 import { getUser } from './connectors/User';
 import LeaveChatScreen from './screens/LeaveChatScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import NewPublicChatScreen from './screens/NewPublicChatScreen';
 
 function App() {
   const [chats, setChats] = useState([]);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/userProfile" element={<ProfileScreen />} />
         <Route path="/leaveChat" element={<LeaveChatScreen user={user} chats={chats} />} />
         <Route path="/newPrivateChat" element={<NewPrivateChatScreen />} />
+        <Route path="/newPublicChat" element={<NewPublicChatScreen />} />
         {chats.map(chat => 
           <Route path={"/chat/" + chat.idToken} element={<ChatScreen chat={chat} />} />
         )}
