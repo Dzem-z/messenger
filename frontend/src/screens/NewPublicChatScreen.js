@@ -7,29 +7,30 @@ import { host } from "../const";
 
 export default function NewPublicChatScreen() {
     const [selectedUsers, setSelectedUsers] = useState([]);
-    const [prefix, setPrefix] = useState("");
+    const [userPrefix, setUserPrefix] = useState("");
+    const [chatName, setChatName] = useState("");
     const [foundUsers, setFoundUsers] = useState([]);
     const [created, setCreated] = useState(false);
 
     useEffect(() => {
-        fetchData("http://" + host + "/api/users?prefix=" + prefix)
+        fetchData("http://" + host + "/api/users?prefix=" + userPrefix)
             .then(userList => {
                 console.log(userList);
                 setFoundUsers(userList._embedded?.userDtoes ?? [])
             })
-    }, [prefix]);
+    }, [userPrefix]);
 
-    function createChat() {}
+    function createChat() {
         getUser().then(
             currentUser => {
                 console.log({
-                    name: currentUser.username,
+                    name: chatName,
                     members: selectedUsers.concat(currentUser),
                     isPrivate: false,
                 });
                 return post("http://" + host + "/api/chats/create", 
                     {
-                        name: currentUser.username,
+                        name: chatName,
                         members: selectedUsers.concat(currentUser),
                         isPrivate: false,
                     }
@@ -57,13 +58,13 @@ export default function NewPublicChatScreen() {
                     find user:
                 </div>
                 <input type="text" name="search" className="send-form-input" placeholder="search for user..."
-                    value={prefix}
-                    onChange={e => setPrefix(e.target.value)}
+                    value={userPrefix}
+                    onChange={e => setUserPrefix(e.target.value)}
                 />
             </div>
         </div>
         <div className="vertical-margin-4-chat"></div>
-        <div className="border-box search-results">
+        <div className="border-box public-chat-search-results">
             <ul>
                 {foundUsers.map(
                     user => 
@@ -77,6 +78,16 @@ export default function NewPublicChatScreen() {
                     </li>
                 )}
             </ul>
+        </div>
+        <div className="vertical-margin-4-chat"></div>
+        <div className="select-info">
+            <div className="text-block new-chat-name-block">
+                    chat name:
+            </div>
+                <input type="text" name="search" className="send-form-input" placeholder="enter chat name"
+                    value={chatName}
+                    onChange={e => setChatName(e.target.value)}
+                />
         </div>
         <div className="vertical-margin-4-chat"></div>
         <div className="select-info">

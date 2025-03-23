@@ -59,7 +59,7 @@ export default function NewPrivateChatScreen() {
             </div>
         </div>
         <div className="vertical-margin-4-chat"></div>
-        <div className="border-box search-results">
+        <div className="border-box private-chat-search-results">
             <ul>
                 {foundUsers.map(
                     user => 
