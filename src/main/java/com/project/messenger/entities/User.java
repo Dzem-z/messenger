@@ -38,6 +38,8 @@ public class User {
 
     private String password;
 
+    private String email;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_authorities",
@@ -57,11 +59,13 @@ public class User {
     public User() {
         username = null;
         password = null;
+        email = null;
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     public String getUsername() {
@@ -70,6 +74,10 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public Set<Authority> getAuthorities() {
@@ -82,6 +90,9 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{id="+ id + ", username=\"" + username + "\", password=\"" + password +"\"}";
+        return "User{id=" + id + ", username=\""
+                + username + "\", password=\""
+                + password + "\", email=\""
+                + email + "\"}";
     }
 }

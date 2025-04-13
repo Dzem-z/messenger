@@ -37,6 +37,9 @@ public class UserService {
         if(userRepository.findUserByUsername(user.getUsername()).isPresent())
             throw new BadCredentialsException("User is already present.");
 
+        if(userRepository.findUserByEmail(user.getEmail()).isPresent())
+            throw new BadCredentialsException("Email is already present.");
+
         return userRepository.save(user);
     }
 
