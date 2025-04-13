@@ -10,7 +10,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -46,10 +45,9 @@ public class Message {
     private User author;
 
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinTable(
-        name = "chats_messages",
-        joinColumns = @JoinColumn(name = "messageId"),
-        inverseJoinColumns = @JoinColumn(name = "chatId"))
+    @JoinColumn(
+        name = "chat_id",
+        nullable = false)
     private Chat chat;
 
     public Message(int id, String content, OffsetDateTime dateOfPosting, Chat chat, User author) {
