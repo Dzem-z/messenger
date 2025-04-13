@@ -94,6 +94,10 @@ public class Chat {
         return messages;
     }
 
+    public Set<File> getFiles() {
+        return files;
+    }
+
     public boolean getIsPrivate() {
         return isPrivate;
     }
