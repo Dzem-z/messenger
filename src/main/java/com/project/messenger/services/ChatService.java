@@ -67,6 +67,7 @@ public class ChatService {
             idToken,
             members,
             new HashSet<>(),
+            new HashSet<>(),
             chat.getIsPrivate());
 
         System.out.println("chat: " + requestedChat);
