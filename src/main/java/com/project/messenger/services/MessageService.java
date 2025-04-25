@@ -37,6 +37,9 @@ public class MessageService {
         OffsetDateTime dateOfPosting = OffsetDateTime.now();
         User currentUser = userService.findCurrentUser(principal);
 
+        if(!chat.getMembers().contains(currentUser))
+            throw new ChatNotFoundException("User " + currentUser.toString() + " is not a member of " + chat.toString() + ".");
+
         Message requestMessage = new Message(
             messageId,
             message.getContent(),
