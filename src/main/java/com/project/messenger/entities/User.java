@@ -1,5 +1,6 @@
 package com.project.messenger.entities;
 
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -85,5 +86,23 @@ public class User {
     @Override
     public String toString() {
         return "User{id="+ id + ", username=\"" + username + "\", password=\"" + password +"\"}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this)
+            return true;
+
+        if(!(o instanceof User))
+            return false;
+        
+        User user = (User) o;
+        return id == user.id && username.equals(user.username) &&
+            password.equals(user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, password);
     }
 }

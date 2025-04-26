@@ -36,4 +36,16 @@ public class Authority {
     public String toString() {
         return "Authority{id=" + id + ", name= \"" + name + "\"}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == this)
+            return true;
+
+        if(!(o instanceof Authority))
+            return false;
+        
+        Authority authority = (Authority) o;
+        return id == authority.id && name.equals(authority.name);
+    }
 }

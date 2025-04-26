@@ -23,12 +23,12 @@ import com.project.messenger.security.entities.SecurityUser;
 public class MessageService {
     
     private final MessageRepository messageRepository;
-    private final ChatRepository chatRepository;
+    private final ChatService chatService;
     private final UserService userService;
 
-    MessageService(MessageRepository messageRepository, ChatRepository chatRepository, UserService userService) {
+    MessageService(MessageRepository messageRepository, ChatService chatService, UserService userService) {
         this.messageRepository = messageRepository;
-        this.chatRepository = chatRepository;
+        this.chatService = chatService;
         this.userService = userService;
     }
 
@@ -36,6 +36,9 @@ public class MessageService {
         int messageId = 0;
         OffsetDateTime dateOfPosting = OffsetDateTime.now();
         User currentUser = userService.findCurrentUser(principal);
+
+        if(!chat.getMembers().contains(currentUser))
+            throw new ChatNotFoundException("User " + currentUser.toString() + " is not a member of " + chat.toString() + ".");
 
         Message requestMessage = new Message(
             messageId,
@@ -53,20 +56,20 @@ public class MessageService {
             .orElseThrow(() -> new MessageNotFoundException(id));
     }
 
-    public List<Message> findAllByChat_id(int id) {
-        return messageRepository.findAllByChat_id(id);
+    public List<Message> findAllByChatId(int id, SecurityUser member) throws UserPrincipalNotFoundException {
+        chatService.findChatbyIdAndAuthorize(id, member);
+
+        return messageRepository.findAllByChat_id(id); 
     }
 
     public Message saveMessage(int id, MessageDto message, SecurityUser author) throws UserPrincipalNotFoundException {
-        Chat chat = chatRepository.findById(id)
-            .orElseThrow(() -> new ChatNotFoundException("No chat with id: " + id));
+        Chat chat = chatService.findChatbyIdAndAuthorize(id, author);
 
         return saveMessage(chat, message, author);
     }
 
     public Message saveMessage(String idToken, MessageDto message, SecurityUser author) throws UserPrincipalNotFoundException {
-        Chat chat = chatRepository.findByIdToken(idToken)
-            .orElseThrow(() -> new ChatNotFoundException("No chat with idToken: " + idToken));
+        Chat chat = chatService.findChatbyIdTokenAndAuthorize(idToken, author);
 
         return saveMessage(chat, message, author);
     }
