@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.messenger.entities.User;
@@ -26,7 +27,7 @@ public class UserService {
             .orElseThrow(() -> new UserPrincipalNotFoundException("Currently logged user doesn't exist"));
     }
 
-    public List<UserDto> findUsersByPrefix(String prefix) {
+    public List<UserDto> findUsersByPrefix(String prefix) { //refactor
         return userRepository.findAllUsersByUsernamePrefix(prefix).stream()
             .map(user -> new UserDto(user.getUsername()))
             .collect(Collectors.toList());
@@ -42,5 +43,10 @@ public class UserService {
 
     public void deleteUser(User user) {
         userRepository.delete(user);
+    }
+
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("Username not found: " + username));
     }
 }

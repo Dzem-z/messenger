@@ -4,6 +4,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 import org.springframework.stereotype.Component;
 
 import com.project.messenger.controllers.MessageController;
@@ -16,8 +19,13 @@ public class MessageDtoModelAssembler implements RepresentationModelAssembler<Me
     
     @Override
     public EntityModel<MessageDto> toModel(MessageDto message) {
-        return EntityModel.of(message,
-            linkTo(methodOn(MessageController.class).one(message.getId())).withSelfRel(),
-            linkTo(methodOn(MessageController.class).all(message.getChat().getId())).withRel("Messages"));
+        try {
+            return EntityModel.of(message,
+                linkTo(methodOn(MessageController.class).one(message.getId())).withSelfRel(),
+                linkTo(methodOn(MessageController.class).all(message.getChat().getId())).withRel("Messages"));
+        } catch (UserPrincipalNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
