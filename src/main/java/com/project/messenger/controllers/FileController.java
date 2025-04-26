@@ -1,8 +1,16 @@
 package com.project.messenger.controllers;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,43 +24,65 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.messenger.assemblers.FileDtoModelAssembler;
+import com.project.messenger.exceptions.StorageFileNotFoundException;
+import com.project.messenger.models.FileDto;
+import com.project.messenger.security.entities.SecurityUser;
+import com.project.messenger.services.FileSystemStorageService;
+
 
 
 @Controller
 public class FileController {
     
-    private final StorageService storageService;
+    private final FileSystemStorageService storageService;
+    private final FileDtoModelAssembler assembler;
 
-    public FileController(StorageService storageService) {
+    public FileController(FileSystemStorageService storageService, FileDtoModelAssembler assembler) {
         this.storageService = storageService;
+        this.assembler = assembler;
     }
 
-    @GetMapping("/api/files/{chatid}")
-    public CollectionModel<EntityModel<FileDto>> listFiles(@PathVariable String chatid) {
+    @GetMapping("/api/files/{idToken}")
+    public CollectionModel<EntityModel<FileDto>> listFiles(@PathVariable String idToken) throws UserPrincipalNotFoundException {
         /*
          * Lists all files uploaded to chat specified with chatid if the user has access to it (is a member of the chat).
          */
+
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<EntityModel<FileDto>> files = storageService.findFilesByChatIdTokenAndAuthorize(idToken, principal).stream()
+            .map(FileDto::new)
+            .map(assembler::toModel)
+            .collect(Collectors.toList());
+
+        return CollectionModel.of(files,
+            linkTo(methodOn(FileController.class).listFiles(idToken)).withSelfRel());
     }
 
-    @GetMapping("/api/files/{id}")
+    @GetMapping("/api/files/{idToken}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String id) {
+    public ResponseEntity<Resource> serveFile(@PathVariable String idToken) {
             /*
              * Serves file described by id specified in the path if the user has access to it (is a member of the chat).
              */
-        
+        return null;
     }
 
-    @PostMapping("/api/files/{id}")
+    @PostMapping("/api/files/{idToken}")
     public ResponseEntity<?> create(
-        @PathVariable String id,
+        @PathVariable String idToken,
         @RequestParam("file") MultipartFile file) {
-        
+            /*
+             * Saves file in chat with id specified in path.
+             */
+        return null;
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
         
+        return null;
     }
     
 

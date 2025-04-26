@@ -51,7 +51,7 @@ public class MessageService {
         return messageRepository.save(requestMessage);
     };
 
-    public Message findById(int id) {
+    public Message findById(int id) { //refactor. Take into account security context.
         return messageRepository.findById(id)
             .orElseThrow(() -> new MessageNotFoundException(id));
     }
