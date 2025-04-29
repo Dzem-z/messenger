@@ -41,8 +41,11 @@ public class MessageController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/message/{id}")
-    public EntityModel<MessageDto> one(@PathVariable int id) {
-        return assembler.toModel(new MessageDto(messageService.findById(id)));
+    public EntityModel<MessageDto> one(@PathVariable int id) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
+
+        return assembler.toModel(new MessageDto(messageService.findById(id, user)));
     }
     
     @CrossOrigin(origins = "http://localhost:3000")

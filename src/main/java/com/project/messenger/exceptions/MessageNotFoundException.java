@@ -2,7 +2,7 @@ package com.project.messenger.exceptions;
 
 public class MessageNotFoundException extends RuntimeException {
     
-    public MessageNotFoundException(int id) {
-        super("Could not find message with id " + id);
+    public MessageNotFoundException(String message) {
+        super("Could not find message:" + message);
     }
 }

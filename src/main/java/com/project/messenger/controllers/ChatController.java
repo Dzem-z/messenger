@@ -126,9 +126,6 @@ public class ChatController {
 
         ChatDto chat = new ChatDto(chatService.findChatbyIdAndUser(id, user));
 
-        if(!(chat.getMembers().contains(new UserDto(principal.getUsername()))))
-            throw new ChatNotFoundException("User is not allowed to retrieve chat with id: " + id);
-
         return assembler.toModel(chat);
     }
 

@@ -24,12 +24,10 @@ public class MessageService {
     
     private final MessageRepository messageRepository;
     private final ChatService chatService;
-    private final UserService userService;
 
     MessageService(MessageRepository messageRepository, ChatService chatService, UserService userService) {
         this.messageRepository = messageRepository;
         this.chatService = chatService;
-        this.userService = userService;
     }
 
     private Message saveMessage(Chat chat, MessageDto message, User user) {
@@ -50,9 +48,14 @@ public class MessageService {
         return messageRepository.save(requestMessage);
     };
 
-    public Message findById(int id) { //refactor. Take into account security context.
-        return messageRepository.findById(id)
-            .orElseThrow(() -> new MessageNotFoundException(id));
+    public Message findById(int id, User user) { 
+        Message message = messageRepository.findById(id)
+            .orElseThrow(() -> new MessageNotFoundException("Could not find message with id:" + id));
+        
+        if(!message.getChat().getMembers().contains(user))
+            throw new MessageNotFoundException("User not Authorized to view message:" + message.toString());
+        
+        return message;
     }
 
     public List<Message> findAllByChatId(int id, User member) {
