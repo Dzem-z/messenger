@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.messenger.entities.Chat;
 import com.project.messenger.entities.File;
+import com.project.messenger.entities.User;
 import com.project.messenger.repositories.FileRepository;
 import com.project.messenger.security.entities.SecurityUser;
 
@@ -21,8 +22,8 @@ public class FileSystemStorageService {
         this.chatService = chatService;
     }
 
-    public List<File> findFilesByChatIdTokenAndAuthorize(String idToken, SecurityUser principal) throws UserPrincipalNotFoundException {
-        chatService.findChatbyIdTokenAndAuthorize(idToken, principal); // This is needed for security Check.
+    public List<File> findFilesByChatIdTokenAndUser(String idToken, User user) throws UserPrincipalNotFoundException {
+        chatService.findChatbyIdTokenAndUser(idToken, user); // This is needed for security Check.
 
         return fileRepository.findAllByChat_idToken(idToken);
     }

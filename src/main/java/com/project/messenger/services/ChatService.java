@@ -96,7 +96,7 @@ public class ChatService {
         chatRepository.delete(chat);
     }
 
-    public Chat findChatbyIdAndAuthorize(int id, SecurityUser principal) throws UserPrincipalNotFoundException {
+    public Chat findChatbyIdAndUser(int id, User user) {
         /*
          * Finds chat by the id if user is member of the chat.
          * Otherwise throws ChatNotFoundException.
@@ -104,23 +104,19 @@ public class ChatService {
         Chat chat = chatRepository.findById(id)
             .orElseThrow(() -> new ChatNotFoundException("No chat with id: " + id));
 
-        User user = userService.findCurrentUser(principal);
-
         if(!chat.getMembers().contains(user))
             throw new ChatNotFoundException("User not authorized to view chat " + chat.toString() + ".");
         
         return chat;
     }
 
-    public Chat findChatbyIdTokenAndAuthorize(String idToken, SecurityUser principal) throws UserPrincipalNotFoundException {
+    public Chat findChatbyIdTokenAndUser(String idToken, User user) {
         /*
          * Finds chat by the idToken if user is member of the chat.
          * Otherwise throws ChatNotFoundException.
          */
         Chat chat = chatRepository.findByIdToken(idToken)
             .orElseThrow(() -> new ChatNotFoundException("No chat with idToken: " + idToken));
-
-            User user = userService.findCurrentUser(principal);
 
         if(!chat.getMembers().contains(user))
             throw new ChatNotFoundException("User not authorized to view chat " + chat.toString() + ".");

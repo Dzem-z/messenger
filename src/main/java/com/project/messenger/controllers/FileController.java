@@ -21,14 +21,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import jakarta.annotation.Resource;
 
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.messenger.assemblers.FileDtoModelAssembler;
+import com.project.messenger.entities.User;
 import com.project.messenger.exceptions.StorageFileNotFoundException;
 import com.project.messenger.models.FileDto;
 import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.FileSystemStorageService;
+import com.project.messenger.services.UserService;
 
 
 
@@ -36,22 +37,25 @@ import com.project.messenger.services.FileSystemStorageService;
 public class FileController {
     
     private final FileSystemStorageService storageService;
+    private final UserService userService;
     private final FileDtoModelAssembler assembler;
 
-    public FileController(FileSystemStorageService storageService, FileDtoModelAssembler assembler) {
+    public FileController(FileSystemStorageService storageService, UserService userService, FileDtoModelAssembler assembler) {
         this.storageService = storageService;
+        this.userService = userService;
         this.assembler = assembler;
     }
 
-    @GetMapping("/api/files/{idToken}")
+    @GetMapping("/api/files/one/{idToken}")
     public CollectionModel<EntityModel<FileDto>> listFiles(@PathVariable String idToken) throws UserPrincipalNotFoundException {
         /*
          * Lists all files uploaded to chat specified with chatid if the user has access to it (is a member of the chat).
          */
 
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
 
-        List<EntityModel<FileDto>> files = storageService.findFilesByChatIdTokenAndAuthorize(idToken, principal).stream()
+        List<EntityModel<FileDto>> files = storageService.findFilesByChatIdTokenAndUser(idToken, user).stream()
             .map(FileDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
@@ -60,16 +64,22 @@ public class FileController {
             linkTo(methodOn(FileController.class).listFiles(idToken)).withSelfRel());
     }
 
-    @GetMapping("/api/files/{idToken}")
+    @GetMapping("/api/files/all/{idToken}")
     @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String idToken) {
-            /*
-             * Serves file described by id specified in the path if the user has access to it (is a member of the chat).
-             */
+    public ResponseEntity<Resource> serveFile(@PathVariable String idToken) throws UserPrincipalNotFoundException {
+        /*
+         * Serves file described by id specified in the path if the user has access to it (is a member of the chat).
+         */
+
+        /*SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
+        
+        Resource file = storageService.loadFileByIdTokenAndUser(idToken, user);*/
+             
         return null;
     }
 
-    @PostMapping("/api/files/{idToken}")
+    @PostMapping("/api/files/create/{idToken}")
     public ResponseEntity<?> create(
         @PathVariable String idToken,
         @RequestParam("file") MultipartFile file) {

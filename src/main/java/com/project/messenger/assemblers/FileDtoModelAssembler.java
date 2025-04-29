@@ -7,10 +7,12 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import org.springframework.stereotype.Component;
 
 import com.project.messenger.controllers.FileController;
 import com.project.messenger.models.FileDto;
 
+@Component
 public class FileDtoModelAssembler implements RepresentationModelAssembler<FileDto, EntityModel<FileDto>> {
     
     @Override
