@@ -50,7 +50,7 @@ public class MessageController {
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/messages/{id}")
-    public CollectionModel<EntityModel<MessageDto>> all(@PathVariable int id) throws UserPrincipalNotFoundException {
+    public ResponseEntity<CollectionModel<EntityModel<MessageDto>>> all(@PathVariable int id) throws UserPrincipalNotFoundException {
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findCurrentUser(principal);
         
@@ -60,8 +60,9 @@ public class MessageController {
             .map(assembler::toModel)
             .collect(Collectors.toList());
 
-        return CollectionModel.of(messages,
-            linkTo(methodOn(MessageController.class).all(id)).withSelfRel());
+        return ResponseEntity.ok()
+            .body(CollectionModel.of(messages,
+                linkTo(methodOn(MessageController.class).all(id)).withSelfRel()));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
@@ -76,5 +77,7 @@ public class MessageController {
             .created(linkTo(methodOn(MessageController.class).one(newMessage.getId())).toUri())
             .body(assembler.toModel(newMessage));
     }
+
+    
     
 }
