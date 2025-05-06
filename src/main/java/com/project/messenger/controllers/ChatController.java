@@ -32,7 +32,6 @@ import com.project.messenger.services.ChatService;
 import com.project.messenger.services.UserService;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ChatController {
 
@@ -46,7 +45,6 @@ public class ChatController {
         this.assembler = assembler;
     }
 
-    
     @GetMapping("/api/chats")
     public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value = "prefix", defaultValue = "") String prefix) throws UserPrincipalNotFoundException {
         /*

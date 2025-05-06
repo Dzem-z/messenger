@@ -13,7 +13,7 @@ export default function LeaveChatScreen({ user, chats }) {
         return httpDelete(chat._links.leave.href)
         .then(res => {
             setLeft(true);
-            setTimeout(() => window.location.replace("http://"  + host + "/index.html"),1e3)
+            setTimeout(() => window.location.replace("/"),1e3)
         });
     }
 
@@ -46,15 +46,16 @@ export default function LeaveChatScreen({ user, chats }) {
 }
 
 function httpDelete(path, data) {
-    return axios.get("/csrf")
+    return axios.get(host + "/csrf")
             .then(tokenResp => {
                 console.log(tokenResp);
                 let config = {
                     headers: {
                         'X-CSRF-TOKEN': tokenResp.data.token,
-                    }
+                    },
+                    withCredentials: true
                   }
-                return axios.delete(path, data, config);
+                return axios.delete(path, config);
             })
             .then(res => res.data)
 }
