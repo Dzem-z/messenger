@@ -43,8 +43,12 @@ public class MessageController {
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/messages/{id}")
-    public CollectionModel<EntityModel<MessageDto>> all(@PathVariable int id) {
-        List<EntityModel<MessageDto>> messages = messageService.findAllByChat_id(id).stream()
+    public CollectionModel<EntityModel<MessageDto>> all(@PathVariable int id) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        
+
+        List<EntityModel<MessageDto>> messages = messageService.findAllByChatId(id, principal).stream()
             .map(MessageDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
