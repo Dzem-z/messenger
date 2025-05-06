@@ -1,6 +1,8 @@
 export default function fetchData(uri) {
     return new Promise((resolve, reject) => {
-        fetch(uri)
+        fetch(uri,{
+            credentials: "include"  // Includes cookies
+        })
             .then(response => {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder('utf-8');

@@ -62,6 +62,7 @@ export default function ChatScreen({ chat }) {
                                 placeholder="enter your message..."
                                 value={message}
                                 onChange={handleChangeMessage}></input>
+                            <button id="send-file" className="fancy-button send-message">Send File</button>
                             <button id="send" className="fancy-button send-message" type="submit">Send</button>
                         </div>
                     </div>

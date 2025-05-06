@@ -11,7 +11,7 @@ export default function NewPrivateChatScreen() {
     const [created, setCreated] = useState(false);
 
     useEffect(() => {
-        fetchData("http://" + host + "/api/users?prefix=" + prefix)
+        fetchData(host + "/api/users?prefix=" + prefix)
             .then(userList => {
                 console.log(userList);
                 setFoundUsers(userList._embedded?.userDtoes ?? [])
@@ -29,7 +29,7 @@ export default function NewPrivateChatScreen() {
                     ],
                     isPrivate: true,
                 });
-                return post("http://" + host + "/api/chats/create", 
+                return post(host + "/api/chats/create", 
                     {
                         name: currentUser.username + "-" + user.username,
                         members: [
@@ -42,7 +42,7 @@ export default function NewPrivateChatScreen() {
             }
         ).then(res => {
             setCreated(true);
-            setTimeout(() => window.location.replace("http://"  + host + "/index.html"),1e3)
+            setTimeout(() => window.location.replace("/"),1e3)
         });
     }
 
@@ -87,13 +87,14 @@ export default function NewPrivateChatScreen() {
 }
 
 function post(path, data) {
-    return axios.get("/csrf")
+    return axios.get(host + "/csrf")
             .then(tokenResp => {
                 console.log(tokenResp);
                 let config = {
                     headers: {
                         'X-CSRF-TOKEN': tokenResp.data.token,
-                    }
+                    },
+                    withCredentials: true
                   }
                 return axios.post(path, data, config);
             })
