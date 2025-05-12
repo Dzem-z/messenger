@@ -1,18 +1,18 @@
-import { redirect } from "react-router-dom"
 import axios from "axios";
-
+import { host } from "../const";
+ 
 export default function ProfileScreen() {
 
     function handleLogout() {
-        window.location.href = '/logout';
+        window.location.href = host + '/logout';
     }
 
     function handleDeleteAccount() {
-        httpDelete('/deleteAccount', null)
+        httpDelete(host + '/deleteAccount', null)
         .then(() => 
-            {window.location.href = '/logout';})
+            {window.location.href = host + '/logout';})
         .catch(() =>
-            {window.location.href = '/logout';});
+            {window.location.href = host + '/logout';});
         
     }
 
@@ -36,9 +36,10 @@ function httpDelete(path, data) {
                 let config = {
                     headers: {
                         'X-CSRF-TOKEN': tokenResp.data.token,
-                    }
+                    },
+                    withCredentials: true
                   }
-                return axios.delete(path, data, config);
+                return axios.delete(path, config);
             })
             .then(res => res.data)
 }

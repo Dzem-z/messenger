@@ -16,9 +16,13 @@ function App() {
   const [chats, setChats] = useState([]);
   const [user, setUser] = useState({username: "No user"})
   useEffect(() => {
-      fetchData("http://" + host + "/api/chats")
+      fetchData(host + "/api/chats")
           .then((data) => {
               console.log(data);
+              if(data._embedded == undefined) {
+                  setChats([]);
+                  return;
+              }
               setChats(data._embedded.chatDtoes);
           })
   }, []);

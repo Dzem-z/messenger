@@ -4,7 +4,7 @@ console.log(Client);
 
 
 const stompClient = new Client({
-    brokerURL: 'ws://' + host + '/ws'
+    brokerURL: 'ws://localhost:8081/ws'
 });
 
 
