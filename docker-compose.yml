@@ -1,9 +1,22 @@
-version: '3.8'
-
 services:
   mailhog:
     image: mailhog/mailhog
-    container_name: mailhog
+    container_name: spring-mailhog
     ports:
       - "8025:8025"   # Web UI
       - "1025:1025"   # SMTP
+
+  mysql:
+    image: mysql
+    container_name: spring-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_NATIVE_PASSWORD=ON
+    ports:
+      - "3306:3306"
+    volumes:
+      - springdb:/var/lib/mysql
+      - ./prepare_database.sql:/docker-entrypoint-initdb.d/prepare_database.sql:ro
+
+volumes:
+  springdb:
