@@ -24,52 +24,54 @@ public class MessageService {
     
     private final MessageRepository messageRepository;
     private final ChatService chatService;
-    private final UserService userService;
 
     MessageService(MessageRepository messageRepository, ChatService chatService, UserService userService) {
         this.messageRepository = messageRepository;
         this.chatService = chatService;
-        this.userService = userService;
     }
 
-    private Message saveMessage(Chat chat, MessageDto message, SecurityUser principal) throws UserPrincipalNotFoundException {
+    private Message saveMessage(Chat chat, MessageDto message, User user) {
         int messageId = 0;
         OffsetDateTime dateOfPosting = OffsetDateTime.now();
-        User currentUser = userService.findCurrentUser(principal);
 
-        if(!chat.getMembers().contains(currentUser))
-            throw new ChatNotFoundException("User " + currentUser.toString() + " is not a member of " + chat.toString() + ".");
+        if(!chat.getMembers().contains(user))
+            throw new ChatNotFoundException("User " + user.toString() + " is not a member of " + chat.toString() + ".");
 
         Message requestMessage = new Message(
             messageId,
             message.getContent(),
             dateOfPosting,
             chat,
-            currentUser
+            user
         );
 
         return messageRepository.save(requestMessage);
     };
 
-    public Message findById(int id) {
-        return messageRepository.findById(id)
-            .orElseThrow(() -> new MessageNotFoundException(id));
+    public Message findById(int id, User user) { 
+        Message message = messageRepository.findById(id)
+            .orElseThrow(() -> new MessageNotFoundException("Could not find message with id:" + id));
+        
+        if(!message.getChat().getMembers().contains(user))
+            throw new MessageNotFoundException("User not Authorized to view message:" + message.toString());
+        
+        return message;
     }
 
-    public List<Message> findAllByChatId(int id, SecurityUser member) throws UserPrincipalNotFoundException {
-        chatService.findChatbyIdAndAuthorize(id, member);
+    public List<Message> findAllByChatId(int id, User member) {
+        chatService.findChatbyIdAndUser(id, member);
 
         return messageRepository.findAllByChat_id(id); 
     }
 
-    public Message saveMessage(int id, MessageDto message, SecurityUser author) throws UserPrincipalNotFoundException {
-        Chat chat = chatService.findChatbyIdAndAuthorize(id, author);
+    public Message saveMessage(int id, MessageDto message, User author) {
+        Chat chat = chatService.findChatbyIdAndUser(id, author);
 
         return saveMessage(chat, message, author);
     }
 
-    public Message saveMessage(String idToken, MessageDto message, SecurityUser author) throws UserPrincipalNotFoundException {
-        Chat chat = chatService.findChatbyIdTokenAndAuthorize(idToken, author);
+    public Message saveMessage(String idToken, MessageDto message, User author) {
+        Chat chat = chatService.findChatbyIdTokenAndUser(idToken, author);
 
         return saveMessage(chat, message, author);
     }

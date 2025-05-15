@@ -120,10 +120,9 @@ public class ChatController {
 
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        ChatDto chat = new ChatDto(chatService.findChatbyIdAndAuthorize(id, principal));
+        User user = userService.findCurrentUser(principal);
 
-        if(!(chat.getMembers().contains(new UserDto(principal.getUsername()))))
-            throw new ChatNotFoundException("User is not allowed to retrieve chat with id: " + id);
+        ChatDto chat = new ChatDto(chatService.findChatbyIdAndUser(id, user));
 
         return assembler.toModel(chat);
     }
@@ -153,7 +152,7 @@ public class ChatController {
 
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findCurrentUser(principal);
-        Chat requestedChat = chatService.findChatbyIdAndAuthorize(id, principal);
+        Chat requestedChat = chatService.findChatbyIdAndUser(id, user);
 
         chatService.removeUserFromChat(user, requestedChat);
 
