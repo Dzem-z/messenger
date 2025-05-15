@@ -1,4 +1,4 @@
-import {connect, disconnect, sendName, setConnectionCallback} from "../connectors/stompClient.js";
+import {connect, disconnect, sendMessage, setConnectionCallback} from "../connectors/stompClient.js";
 import { useState, useCallback, useEffect } from 'react';
 import fetchData from "../connectors/fetchData.js";
 
@@ -33,7 +33,7 @@ export default function ChatScreen({ chat }) {
     
         const formJson = Object.fromEntries(formData.entries());
         setMessage("");
-        sendName(chat.idToken, formJson.message);
+        sendMessage(chat.idToken, formJson.message);
     
         //console.log(formJson);
     }
@@ -43,8 +43,12 @@ export default function ChatScreen({ chat }) {
         
     }, []);
 
+    const recieveFile = useCallback((file) => {
+        console.log("Recieved file: " + file);
+    });
+
     const connectStomp = useCallback(() => {
-        setConnectionCallback(recieveMessage);
+        setConnectionCallback(recieveMessage, recieveFile);
         disconnect();
         connect(chat.idToken);
     }, [chat]);

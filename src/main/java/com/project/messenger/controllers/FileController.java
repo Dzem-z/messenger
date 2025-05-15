@@ -13,6 +13,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,12 +46,19 @@ public class FileController {
     private final UserService userService;
     private final ChatService chatService;
     private final FileDtoModelAssembler assembler;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public FileController(FileSystemStorageService storageService, UserService userService, ChatService chatService, FileDtoModelAssembler assembler) {
+    public FileController(
+            FileSystemStorageService storageService, 
+            UserService userService, 
+            ChatService chatService, 
+            FileDtoModelAssembler assembler,
+            SimpMessagingTemplate messagingTemplate) {
         this.storageService = storageService;
         this.chatService = chatService;
         this.userService = userService;
         this.assembler = assembler;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/api/files/all/{idToken}")
@@ -109,6 +117,8 @@ public class FileController {
         
         FileDto result = new FileDto(storageService.storeFile(chat, file, user));
 
+        messagingTemplate.convertAndSend("/topic/files/" + idToken, result);
+
         return ResponseEntity
             .created(linkTo(methodOn(FileController.class).serveFile(idToken)).toUri())
             .body(assembler.toModel(result));
@@ -119,13 +129,4 @@ public class FileController {
         
         return ResponseEntity.badRequest().body(exc.getMessage());
     }
-    
-
-
-    
-
-
-    
-
-
 }
