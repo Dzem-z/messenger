@@ -1,4 +1,4 @@
-package com.project.messenger.websocket;
+package com.project.messenger.filters;
 
 import java.util.List;
 import java.util.stream.Collectors;
