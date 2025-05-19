@@ -43,7 +43,7 @@ public class WebSocketController {
 
         MessageDto processedMessage = new MessageDto(messageService.saveMessage(chatId, message, user));
 
-        messagingTemplate.convertAndSend("/topic/messages/" + chatId, processedMessage);
+        messagingTemplate.convertAndSend("/topic/messages/" + chatId, processedMessage); //Refactor: Listeners only notified when user sendsMessage through message endpoint.
 
         log.info("Sent message to /topic/messages/" + chatId + ": " + message.getContent());
     }
