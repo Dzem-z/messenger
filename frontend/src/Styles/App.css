@@ -421,6 +421,19 @@ ul {
   color: rgb(231, 233, 232);
 }
 
+.send-form-input:disabled {
+  background-color: #f2f2f2; 
+  border-color: #ccc;        
+  color: #999;               
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;             
+}
+
+.send-form-input:disabled::placeholder {
+  color: #bbb;
+}
+
 input[type="text"] {
   -moz-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
   -o-transition: all 0.25s cubic-bezier(0.53, 0.01, 0.35, 1.5);
