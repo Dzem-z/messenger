@@ -3,6 +3,8 @@ package com.project.messenger.controllers;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,11 +89,21 @@ public class FileController {
         User user = userService.findCurrentUser(principal);
         
         Resource file = storageService.loadFileAsResourceByIdTokenAndUser(idToken, user);
-             
+
         if(file == null)
             return ResponseEntity.notFound().build();
-        
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+
+        String contentType = null;
+        try {
+            contentType = Files.probeContentType(file.getFile().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION,
             "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 

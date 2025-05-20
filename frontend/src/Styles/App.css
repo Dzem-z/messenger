@@ -260,10 +260,6 @@ ul {
   text-align: left;
 }
 
-.text-block.new-chat-name-block {
- 
-}
-
 .fancy-button {
   align-items: center;
   appearance: none;
@@ -438,11 +434,4 @@ input[type="text"] {
 
 .vertical-margin-10-tile {
   height:10%;
-}
-
-.message-wrapper{
-  color: white;
-  background-color: var(--primary-color);
-  border-radius: 25%;
-  width: 30%;
 }

@@ -140,7 +140,7 @@ export default function ChatScreen({ chat }) {
                         <tbody id="greetings">
                             {messages.map((message, index) => 
                                 <tr key={index}>
-                                    <td className="message-wrapper">
+                                    <td>
                                         <b>{isFile(message) ? "📁" : "💬"} {message.author.username}:</b>{" "}
                                         {isFile(message) ? (
                                             <a 
