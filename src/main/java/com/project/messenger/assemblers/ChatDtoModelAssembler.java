@@ -9,6 +9,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Component;
 
 import com.project.messenger.controllers.ChatController;
+import com.project.messenger.controllers.FileController;
 import com.project.messenger.controllers.MessageController;
 import com.project.messenger.models.ChatDto;
 
@@ -24,7 +25,8 @@ public class ChatDtoModelAssembler implements RepresentationModelAssembler<ChatD
                 linkTo(methodOn(ChatController.class).one(chat.getId())).withSelfRel(),
                 linkTo(methodOn(ChatController.class).all("")).withRel("chats"),
                 linkTo(methodOn(ChatController.class).leave(chat.getId())).withRel("leave"),
-                linkTo(methodOn(MessageController.class).all(chat.getId())).withRel("messages"));
+                linkTo(methodOn(MessageController.class).all(chat.getId())).withRel("messages"),
+                linkTo(methodOn(FileController.class).listFiles(chat.getIdToken())).withRel("files"));
         } catch (UserPrincipalNotFoundException e) {
             e.printStackTrace();
             return null;

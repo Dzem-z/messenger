@@ -46,22 +46,27 @@ export default function ChatScreen({ chat }) {
     }
 
     useEffect(() => {
-        fetchData(chat._links.messages.href)
-            .then(result => {
-                if(result._embedded != undefined) {
-                    const messages = result._embedded.messageDtoes || [];
-                    
-                    const chat = messages[0]?.chat
-                    const files = chat?.files || [];
-                    
-                    const combined = [...messages, ...files].sort(
-                        (a, b) => new Date(a.dateOfPosting) - new Date(b.dateOfPosting)
-                    );  
-                    
-                    setMessages(combined);
-                } else {
-                    setMessages([]);
+        console.log("Links: ", chat._links);
+        Promise.all([fetchData(chat._links.messages.href),
+                     fetchData(chat._links.files.href)])
+            .then(([result1, result2]) => {
+                const combined = [];
+
+                console.log("results", result1, result2);
+
+                if(result1._embedded != undefined) {
+                    const messages = result1._embedded.messageDtoes || [];
+                    combined.push(...messages); 
                 }
+                if(result2._embedded != undefined) {
+                    const files = result2._embedded.fileDtoes || [];
+                    combined.push(...files);
+                }
+
+                setMessages(combined.sort(
+                    (a, b) => new Date(a.dateOfPosting) - new Date(b.dateOfPosting)
+                ));
+
             });
         setMessage("");
         setFile(null);
