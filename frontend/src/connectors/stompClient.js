@@ -18,14 +18,14 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
-function setConnectionCallback(messageCallback, fileCallback) {
+function setConnectionCallback(messageCallback) {
     stompClient.onConnect = (frame) => {
         setConnected(true);
         console.log('Connected: ' + frame);
         console.log("Message destintation: " + '/topic/messages/' + stompClient.chatId);
         console.log("File destination: " + '/topic/files/' + stompClient.chatId);
         stompClient.subscribe('/topic/messages/' + stompClient.chatId, messageCallback);
-        stompClient.subscribe('/topic/files/' + stompClient.chatId, fileCallback);
+        stompClient.subscribe('/topic/files/' + stompClient.chatId, messageCallback);
     };
 }
 

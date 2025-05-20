@@ -2,6 +2,7 @@ import {connect, disconnect, sendMessage, setConnectionCallback} from "../connec
 import { useState, useCallback, useEffect, useRef } from 'react';
 import fetchData from "../connectors/fetchData.js";
 import { MAX_FILE_SIZE } from "../const.js";
+import uploadFile from "../connectors/uploadFile.js";
 
 export default function ChatScreen({ chat }) {
     const [messages, setMessages] = useState([]);
@@ -30,6 +31,16 @@ export default function ChatScreen({ chat }) {
     
     };
 
+    const handleUpload = async (e) => {
+        e.preventDefault();
+        if (!file) return;
+        try {
+            const result = await uploadFile(file, chat.idToken);
+        } catch (err) {
+            console.log('Upload failed' + err);
+        }
+    };
+
     function handleChangeMessage(e) {
         setMessage(e.target.value);
     }
@@ -38,13 +49,22 @@ export default function ChatScreen({ chat }) {
         fetchData(chat._links.messages.href)
             .then(result => {
                 if(result._embedded != undefined) {
-                    console.log(result._embedded.messageDtoes);
-                    setMessages(result._embedded.messageDtoes);
+                    const messages = result._embedded.messageDtoes || [];
+                    
+                    const chat = messages[0]?.chat
+                    const files = chat?.files || [];
+                    
+                    const combined = [...messages, ...files].sort(
+                        (a, b) => new Date(a.dateOfPosting) - new Date(b.dateOfPosting)
+                    );  
+                    
+                    setMessages(combined);
                 } else {
                     setMessages([]);
                 }
             });
         setMessage("");
+        setFile(null);
     }, [chat]);
 
     function handleSendMessage(e) {
@@ -59,30 +79,32 @@ export default function ChatScreen({ chat }) {
         const formJson = Object.fromEntries(formData.entries());
         setMessage("");
         sendMessage(chat.idToken, formJson.message);
-        // sendName(chat.idToken, formJson.message);
     
         console.log(formJson);
     }
 
     const recieveMessage = useCallback((message) => {
         setMessages((prevMessages) => prevMessages.concat(JSON.parse(message.body)));
-        
     }, []);
 
-    const recieveFile = useCallback((file) => {
-        console.log("Recieved file: " + file);
-    });
-
     const connectStomp = useCallback(() => {
-        setConnectionCallback(recieveMessage, recieveFile);
+        setConnectionCallback(recieveMessage);
         disconnect();
         connect(chat.idToken);
     }, [chat]);
 
+    const isFile = (message) => {
+        return message.idToken != null && message.idToken != undefined;
+    }
+
+    const fileUploaded = () => {
+        return file != null && file != undefined;
+    }
+    
     useEffect(connectStomp, [connectStomp]);
 
     return <div className="border-box main">
-                <form className="border-box message-box" method="post" onSubmit={handleSendMessage}>
+                <form className="border-box message-box" method="post" onSubmit={fileUploaded() ? handleUpload : handleSendMessage}>
                     <div className="send-form">
                         <div className="send-form-block">
                             <input 
@@ -92,8 +114,9 @@ export default function ChatScreen({ chat }) {
                                 placeholder="enter your message..."
                                 value={message}
                                 onChange={handleChangeMessage}
+                                disabled={file != null}
                             />
-                            <button type="button" id="send-file" className="fancy-button send-message" onClick={handleFileClick}>Send file</button>
+                            <button type="button" id="send-file" className="fancy-button send-message" onClick={handleFileClick}>Upload file</button>
                             <input
                                 type="file"
                                 ref={fileInputRef}
@@ -117,7 +140,20 @@ export default function ChatScreen({ chat }) {
                         <tbody id="greetings">
                             {messages.map((message, index) => 
                                 <tr key={index}>
-                                    <td className="message-wrapper"><b>{message.author.username}: </b>{message.content}</td>
+                                    <td className="message-wrapper">
+                                        <b>{isFile(message) ? "📁" : "💬"} {message.author.username}:</b>{" "}
+                                        {isFile(message) ? (
+                                            <a 
+                                                href={`http://localhost:8081/api/files/one/${message.idToken}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                            >
+                                                {message.content}
+                                            </a>
+                                        ) : (
+                                            message.content
+                                        )}
+                                    </td>
                                 </tr>
                             )}
                         </tbody>

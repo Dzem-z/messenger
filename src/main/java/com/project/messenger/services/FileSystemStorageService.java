@@ -39,7 +39,7 @@ public class FileSystemStorageService {
     }
 
     private Path constructPath(File file) {
-        return FileSystems.getDefault().getPath(storageProperties.getLocation(), file.getChat().getIdToken(), String.valueOf(file.getSender().getId()));
+        return FileSystems.getDefault().getPath(storageProperties.getLocation(), file.getChat().getIdToken(), String.valueOf(file.getSender().getId()), file.getName());
     }
 
     public List<File> findFilesByChatIdTokenAndUser(String idToken, User user) throws UserPrincipalNotFoundException {
