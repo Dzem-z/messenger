@@ -1,7 +1,7 @@
 import {connect, disconnect, sendMessage, setConnectionCallback} from "../connectors/stompClient.js";
 import { useState, useCallback, useEffect, useRef } from 'react';
 import fetchData from "../connectors/fetchData.js";
-import { MAX_FILE_SIZE } from "../const.js";
+import { MAX_FILE_SIZE, host } from "../const.js";
 import uploadFile from "../connectors/uploadFile.js";
 
 export default function ChatScreen({ chat }) {
@@ -149,7 +149,7 @@ export default function ChatScreen({ chat }) {
                                         <b>{isFile(message) ? "📁" : "💬"} {message.author.username}:</b>{" "}
                                         {isFile(message) ? (
                                             <a 
-                                                href={`http://localhost:8081/api/files/one/${message.idToken}`} 
+                                                href={`${host}/api/files/one/${message.idToken}`} 
                                                 target="_blank" 
                                                 rel="noopener noreferrer"
                                             >
