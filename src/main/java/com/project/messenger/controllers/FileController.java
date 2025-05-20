@@ -3,6 +3,8 @@ package com.project.messenger.controllers;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,13 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.messenger.assemblers.FileDtoModelAssembler;
@@ -38,7 +35,7 @@ import com.project.messenger.services.FileSystemStorageService;
 import com.project.messenger.services.UserService;
 
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @Controller
 public class FileController {
     
@@ -92,11 +89,21 @@ public class FileController {
         User user = userService.findCurrentUser(principal);
         
         Resource file = storageService.loadFileAsResourceByIdTokenAndUser(idToken, user);
-             
+
         if(file == null)
             return ResponseEntity.notFound().build();
-        
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+
+        String contentType = null;
+        try {
+            contentType = Files.probeContentType(file.getFile().toPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType)).header(HttpHeaders.CONTENT_DISPOSITION,
             "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 

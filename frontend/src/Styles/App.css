@@ -260,10 +260,6 @@ ul {
   text-align: left;
 }
 
-.text-block.new-chat-name-block {
- 
-}
-
 .fancy-button {
   align-items: center;
   appearance: none;
@@ -423,6 +419,19 @@ ul {
 
 .send-form-input:focus::placeholder {
   color: rgb(231, 233, 232);
+}
+
+.send-form-input:disabled {
+  background-color: #f2f2f2; 
+  border-color: #ccc;        
+  color: #999;               
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;             
+}
+
+.send-form-input:disabled::placeholder {
+  color: #bbb;
 }
 
 input[type="text"] {

@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class FileDto {
 
-    private String name;
+    private String content;
 
     private String idToken;
 
@@ -21,25 +21,25 @@ public class FileDto {
 
     private ChatDto chat;
 
-    private UserDto sender;
+    private UserDto author;
 
     public FileDto(File file) {
-        this.name = file.getName();
+        this.content = file.getName();
         this.idToken = file.getIdToken();
         this.dateOfPosting = file.getDateOfPosting();
         this.chat = new ChatDto(file.getChat());
-        this.sender = new UserDto(file.getSender());
+        this.author = new UserDto(file.getSender());
     }
 
     public FileDto(String name, String idToken, OffsetDateTime dateOfPosting, UserDto sender) {
-        this.name = name;
+        this.content = name;
         this.idToken = idToken;
         this.dateOfPosting = dateOfPosting;
-        this.sender = sender;
+        this.author = sender;
     }
 
     public String getName() {
-        return name;
+        return content;
     }
 
     public String getIdToken() {
@@ -55,6 +55,6 @@ public class FileDto {
     }
 
     public UserDto getSender() {
-        return sender;
+        return author;
     }
 }
