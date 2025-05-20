@@ -55,18 +55,23 @@ public class Chat {
         fetch = FetchType.EAGER)
     private Set<Message> messages;
 
-    public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages) {
-        this(id, name, idToken, members, messages, false);
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE,
+        fetch = FetchType.EAGER)
+    private Set<File> files;
+
+    public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages, Set<File> files) {
+        this(id, name, idToken, members, messages, files, false);
     }
 
 
-    public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages, boolean isPrivate) {
+    public Chat(int id, String name, String idToken, Set<User> members, Set<Message> messages, Set<File> files, boolean isPrivate) {
         this.id = id;
         this.name = name;
         this.isPrivate = isPrivate;
         this.idToken = idToken;
         this.members = members;
         this.messages = messages;
+        this.files = files;
     }
 
     public int getId() {
@@ -87,6 +92,10 @@ public class Chat {
 
     public Set<Message> getMessages() {
         return messages;
+    }
+
+    public Set<File> getFiles() {
+        return files;
     }
 
     public boolean getIsPrivate() {

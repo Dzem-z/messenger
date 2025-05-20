@@ -27,10 +27,12 @@ public class SecurityConfig {
         return http
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/styles.css", "/register", "register/save").permitAll()
+                    .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("http://localhost:3000", true)
+                        .failureUrl("/login?error=true")
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
