@@ -11,18 +11,22 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
+import com.project.messenger.entities.User;
 import com.project.messenger.models.MessageDto;
 import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.MessageService;
+import com.project.messenger.services.UserService;
 
 @Controller
 public class WebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageService messageService;
+    private final UserService userService;
     
-    public WebSocketController(SimpMessagingTemplate messagingTemplate, MessageService messageService) {
+    public WebSocketController(SimpMessagingTemplate messagingTemplate, MessageService messageService, UserService userService) {
         this.messagingTemplate = messagingTemplate;
         this.messageService = messageService;
+        this.userService = userService;
     }
 
     private static final Logger log = LoggerFactory.getLogger(WebSocketController.class);
@@ -33,11 +37,13 @@ public class WebSocketController {
         @DestinationVariable("chatId") String chatId,
         Authentication authentication) throws UserPrincipalNotFoundException {
         SecurityUser principal = (SecurityUser) authentication.getPrincipal();
+        User user = userService.findCurrentUser(principal);
         log.info("Recieved message from user: " + principal.getUsername() + ": " + message.getContent() + ", and chatId: " + chatId);
 
-        MessageDto processedMessage = new MessageDto(messageService.saveMessage(chatId, message, principal));
 
-        messagingTemplate.convertAndSend("/topic/messages/" + chatId, processedMessage);
+        MessageDto processedMessage = new MessageDto(messageService.saveMessage(chatId, message, user));
+
+        messagingTemplate.convertAndSend("/topic/messages/" + chatId, processedMessage); //Refactor: Listeners only notified when user sendsMessage through message endpoint.
 
         log.info("Sent message to /topic/messages/" + chatId + ": " + message.getContent());
     }

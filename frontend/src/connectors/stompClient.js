@@ -4,9 +4,8 @@ console.log(Client);
 
 
 const stompClient = new Client({
-    brokerURL: 'ws://' + host + '/ws'
+    brokerURL: 'ws://localhost:8081/ws'
 });
-
 
 
 
@@ -19,28 +18,18 @@ stompClient.onStompError = (frame) => {
     console.error('Additional details: ' + frame.body);
 };
 
-function setConnectionCallback(callback) {
+function setConnectionCallback(messageCallback) {
     stompClient.onConnect = (frame) => {
         setConnected(true);
         console.log('Connected: ' + frame);
-        console.log("destintation: " + '/topic/messages/' + stompClient.chatId);
-        stompClient.subscribe('/topic/messages/' + stompClient.chatId, callback); //(greeting) => {
-           //console.log("logging: " + greeting);
-            //showGreeting(JSON.parse(greeting.body).message);
-        //});
+        console.log("Message destintation: " + '/topic/messages/' + stompClient.chatId);
+        console.log("File destination: " + '/topic/files/' + stompClient.chatId);
+        stompClient.subscribe('/topic/messages/' + stompClient.chatId, messageCallback);
+        stompClient.subscribe('/topic/files/' + stompClient.chatId, messageCallback);
     };
 }
 
 function setConnected(connected) {
-    //$("#connect").prop("disabled", connected);
-    //$("#disconnect").prop("disabled", !connected);
-    /*if (connected) {
-        $("#conversation").show();
-    }
-    else {
-        $("#conversation").hide();
-    }
-    $("#greetings").html("");*/
 }
 
 function connect(chatId) {
@@ -55,22 +44,11 @@ function disconnect() {
     console.log("Disconnected");
 }
 
-function sendName(chatId, message) {
+function sendMessage(chatId, message) {
     stompClient.publish({
         destination: "/app/chat/sendMessage/" + chatId,
         body: JSON.stringify({'content': message})
     });
 }
 
-function showGreeting(message) {
-    //$("#greetings").append("<tr><td>" + message + "</td></tr>");
-}
-
-/*$(function () {
-    $("form").on('submit', (e) => e.preventDefault());
-    $( "#connect" ).click(() => connect());
-    $( "#disconnect" ).click(() => disconnect());
-    $( "#send" ).click(() => sendName());
-});*/
-
-export {setConnected, setConnectionCallback, connect, disconnect, sendName, showGreeting}
+export {setConnected, setConnectionCallback, connect, disconnect, sendMessage}

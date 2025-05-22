@@ -24,26 +24,23 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.httpBasic(withDefaults())
-        .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(
-                auth -> auth.requestMatchers(
-                        "/",
-                        "/styles.css",
-                        "/register",
-                        "register/save",
-                        "/forgot-password",
-                        "reset-password/**",
-                        "reset-password-success"
-                    ).permitAll().anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/home", true)
-                .failureUrl("/login?error=true")
-                .permitAll())
-            
-            .build();
+        return http
+                .cors(withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/styles.css", "/register", "register/save", "/forgot-password", "reset-password/**", "reset-password-success").permitAll()
+                    .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .defaultSuccessUrl("http://localhost:3000", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")  // 👈 Appends the `logout` param
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
+                .build();
     }
 
     @Bean

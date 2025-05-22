@@ -1,5 +1,6 @@
 package com.project.messenger.services;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -17,16 +18,17 @@ import com.project.messenger.exceptions.InconsistentChatException;
 import com.project.messenger.models.ChatDto;
 import com.project.messenger.repositories.ChatRepository;
 import com.project.messenger.repositories.UserRepository;
+import com.project.messenger.security.entities.SecurityUser;
 
 @Service
 public class ChatService {
     
     private final ChatRepository chatRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ChatService(ChatRepository chatRepository, UserRepository userRepository) {
+    public ChatService(ChatRepository chatRepository, UserService userService) {
         this.chatRepository = chatRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public List<Chat> findAllPublicChatsWithPrefixByUser(String prefix, User user) {
@@ -54,8 +56,7 @@ public class ChatService {
         System.out.println(idToken);
 
         Set<User> members = chat.getMembers().stream().map(user -> {
-            return userRepository.findUserByUsername(user.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found " + user.getUsername()));
+            return userService.findUserByUsername(user.getUsername()); //refactor
         }).collect(Collectors.toSet());
 
         if(chat.getIsPrivate() && chat.getMembers().size() != 2) //Check if private chat contains exactly two users.
@@ -66,6 +67,7 @@ public class ChatService {
             chat.getName(),
             idToken,
             members,
+            new HashSet<>(),
             new HashSet<>(),
             chat.getIsPrivate());
 
@@ -80,7 +82,7 @@ public class ChatService {
          */
         chat.getMembers().remove(user);
 
-        if(chat.getMembers().size() == 0 || (chat.getIsPrivate() && chat.getMembers().size() != 2)) {
+        if(chat.getMembers().isEmpty() || (chat.getIsPrivate() && chat.getMembers().size() != 2)) {
             deleteChat(chat);
             return Optional.empty();
         } else
@@ -94,12 +96,32 @@ public class ChatService {
         chatRepository.delete(chat);
     }
 
-    public Chat findChatbyId(int id) {
+    public Chat findChatbyIdAndUser(int id, User user) {
         /*
-         * Finds chat by the id.
+         * Finds chat by the id if user is member of the chat.
+         * Otherwise throws ChatNotFoundException.
          */
-        return chatRepository.findById(id)
+        Chat chat = chatRepository.findById(id)
             .orElseThrow(() -> new ChatNotFoundException("No chat with id: " + id));
+
+        if(!chat.getMembers().contains(user))
+            throw new ChatNotFoundException("User not authorized to view chat " + chat.toString() + ".");
+        
+        return chat;
+    }
+
+    public Chat findChatbyIdTokenAndUser(String idToken, User user) {
+        /*
+         * Finds chat by the idToken if user is member of the chat.
+         * Otherwise throws ChatNotFoundException.
+         */
+        Chat chat = chatRepository.findByIdToken(idToken)
+            .orElseThrow(() -> new ChatNotFoundException("No chat with idToken: " + idToken));
+
+        if(!chat.getMembers().contains(user))
+            throw new ChatNotFoundException("User not authorized to view chat " + chat.toString() + ".");
+            
+        return chat;
     }
 
 }

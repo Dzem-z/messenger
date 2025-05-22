@@ -21,6 +21,8 @@ public class ChatDto {
 
     private Set<MessageDto> messages;
 
+    private Set<FileDto> files;
+
     private boolean isPrivate;
 
     public ChatDto(Chat chat) {
@@ -32,6 +34,9 @@ public class ChatDto {
             .collect(Collectors.toSet());
         this.messages = chat.getMessages().stream()
             .map(message -> new MessageDto(message.getId(), message.getContent(), message.getDateOfPosting(), new UserDto(message.getAuthor())))
+            .collect(Collectors.toSet());
+        this.files = chat.getFiles().stream()
+            .map(file -> new FileDto(file.getName(), file.getIdToken(), file.getDateOfPosting(), new UserDto(file.getSender())))
             .collect(Collectors.toSet());
         this.isPrivate = chat.getIsPrivate();
     }

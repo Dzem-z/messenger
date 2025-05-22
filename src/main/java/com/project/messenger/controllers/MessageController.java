@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.messenger.assemblers.MessageDtoModelAssembler;
+import com.project.messenger.entities.User;
 import com.project.messenger.models.MessageDto;
 import com.project.messenger.security.entities.SecurityUser;
 import com.project.messenger.services.MessageService;
+import com.project.messenger.services.UserService;
 
 
 
@@ -28,41 +30,54 @@ import com.project.messenger.services.MessageService;
 public class MessageController {
     
     private final MessageService messageService;
+    private final UserService userService;
     private final MessageDtoModelAssembler assembler;
 
-    public MessageController(MessageService messageService, MessageDtoModelAssembler assembler) {
+    public MessageController(MessageService messageService, UserService userService, MessageDtoModelAssembler assembler) {
         this.messageService = messageService;
+        this.userService = userService;
         this.assembler = assembler;
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/message/{id}")
-    public EntityModel<MessageDto> one(@PathVariable int id) {
-        return assembler.toModel(new MessageDto(messageService.findById(id)));
+    public EntityModel<MessageDto> one(@PathVariable int id) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
+
+        return assembler.toModel(new MessageDto(messageService.findById(id, user)));
     }
     
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/api/messages/{id}")
-    public CollectionModel<EntityModel<MessageDto>> all(@PathVariable int id) {
-        List<EntityModel<MessageDto>> messages = messageService.findAllByChat_id(id).stream()
+    public ResponseEntity<CollectionModel<EntityModel<MessageDto>>> all(@PathVariable int id) throws UserPrincipalNotFoundException {
+        SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
+        
+
+        List<EntityModel<MessageDto>> messages = messageService.findAllByChatId(id, user).stream()
             .map(MessageDto::new)
             .map(assembler::toModel)
             .collect(Collectors.toList());
 
-        return CollectionModel.of(messages,
-            linkTo(methodOn(MessageController.class).all(id)).withSelfRel());
+        return ResponseEntity.ok()
+            .body(CollectionModel.of(messages,
+                linkTo(methodOn(MessageController.class).all(id)).withSelfRel()));
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/api/messages/{id}")
     public ResponseEntity<EntityModel<MessageDto>> create(@PathVariable int id, @RequestBody MessageDto message) throws UserPrincipalNotFoundException {
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.findCurrentUser(principal);
 
-        MessageDto newMessage = new MessageDto(messageService.saveMessage(id, message, principal));
+        MessageDto newMessage = new MessageDto(messageService.saveMessage(id, message, user));
 
         return ResponseEntity
             .created(linkTo(methodOn(MessageController.class).one(newMessage.getId())).toUri())
             .body(assembler.toModel(newMessage));
     }
+
+    
     
 }

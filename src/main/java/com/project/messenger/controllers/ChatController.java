@@ -32,7 +32,6 @@ import com.project.messenger.services.ChatService;
 import com.project.messenger.services.UserService;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class ChatController {
 
@@ -46,7 +45,6 @@ public class ChatController {
         this.assembler = assembler;
     }
 
-    
     @GetMapping("/api/chats")
     public CollectionModel<EntityModel<ChatDto>> all(@RequestParam(value = "prefix", defaultValue = "") String prefix) throws UserPrincipalNotFoundException {
         /*
@@ -115,24 +113,23 @@ public class ChatController {
     }
 
     @GetMapping("/api/chats/{id}")
-    public EntityModel<ChatDto> one(@PathVariable int id) {
+    public EntityModel<ChatDto> one(@PathVariable int id) throws UserPrincipalNotFoundException {
         /*
          * Returns chat with specified id if the user is a member.
          */
 
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        ChatDto chat = new ChatDto(chatService.findChatbyId(id));
+        User user = userService.findCurrentUser(principal);
 
-        if(!(chat.getMembers().contains(new UserDto(principal.getUsername()))))
-            throw new ChatNotFoundException("User is not allowed to retrieve chat with id: " + id);
+        ChatDto chat = new ChatDto(chatService.findChatbyIdAndUser(id, user));
 
         return assembler.toModel(chat);
     }
 
     //@CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/api/chats/create")
-    public ResponseEntity<EntityModel<ChatDto>> create(@RequestBody ChatDto chat) {
+    public ResponseEntity<EntityModel<ChatDto>> create(@RequestBody ChatDto chat) throws UserPrincipalNotFoundException {
 
         /*
          * Creates a chat with fields specified by chatDto.
@@ -155,7 +152,7 @@ public class ChatController {
 
         SecurityUser principal = (SecurityUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.findCurrentUser(principal);
-        Chat requestedChat = chatService.findChatbyId(id);
+        Chat requestedChat = chatService.findChatbyIdAndUser(id, user);
 
         chatService.removeUserFromChat(user, requestedChat);
 
