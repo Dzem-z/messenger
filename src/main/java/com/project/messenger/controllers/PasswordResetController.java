@@ -28,11 +28,17 @@ public class PasswordResetController {
     }
 
     @GetMapping("/reset-password/{token}")
-    public String resetPassword(@PathVariable String token) {
+    public String resetPassword(
+            @PathVariable String token) {
         if (passwordResetService.verifyPasswordResetToken(token)) {
             return "res";
         }
-        return "Error";
+        return "res-err";
+    }
+
+    @GetMapping("/reset-password-success")
+    public String resetPasswordSuccess() {
+        return "res-suc";
     }
 
     @PostMapping("/reset-password/{token}")
@@ -40,6 +46,6 @@ public class PasswordResetController {
             @PathVariable String token,
             @RequestParam String password) {
         passwordResetService.resetPassword(token, password);
-        return "redirect:/login";
+        return "redirect:/reset-password-success";
     }
 }

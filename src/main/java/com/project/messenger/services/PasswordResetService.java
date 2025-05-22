@@ -3,6 +3,8 @@ package com.project.messenger.services;
 import com.project.messenger.entities.PasswordResetToken;
 import com.project.messenger.repositories.PasswordResetTokenRepository;
 import com.project.messenger.repositories.UserRepository;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -50,9 +52,8 @@ public class PasswordResetService {
     }
 
     public void resetPassword(String token, String newPassword) {
-        if (!verifyPasswordResetToken(token)) {
-            return;
-        }
+        if (!verifyPasswordResetToken(token))
+            throw new BadCredentialsException("Password reset token expired or do not exist");
         //I know that exist due to verify method
         var passwordResetToken = passwordResetTokenRepository.findByToken(token).get();
         passwordResetTokenRepository.delete(passwordResetToken);
