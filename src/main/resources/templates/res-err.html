@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invalid Reset Link</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<br><br><br>
+<div class="container">
+    <div class="row col-md-6 offset-md-3">
+        <div class="card border-danger">
+            <div class="card-header text-center bg-danger text-white">
+                <h2>Invalid or Expired Link</h2>
+            </div>
+            <div class="card-body text-center">
+                <p class="fs-5 text-danger">The password reset link is invalid or has expired.</p>
+                <a href="/forgot-password" class="btn btn-danger mt-3">Request New Password Reset</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
