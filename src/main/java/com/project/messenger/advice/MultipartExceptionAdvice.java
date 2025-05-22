@@ -14,7 +14,7 @@ public class MultipartExceptionAdvice {
     @ExceptionHandler(MultipartException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     String MultipartExceptionHandler(Model model) {
-    model.addAttribute("errorMessage", "Multipart exception: wrong HTTP request.");
-    return "error/multipartError"; 
-}
+        model.addAttribute("errorMessage", "Multipart exception: wrong HTTP request.");
+        return "error/multipartError";
+    }
 }
