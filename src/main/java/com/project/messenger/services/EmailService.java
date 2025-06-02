@@ -29,7 +29,7 @@ public class EmailService {
         message.setTo(email);
         message.setSubject("Verification");
         message.setText("You can verfy your email by clicking on the link below:\n"
-        + "http://localhost:8081/verification/" + token);
+        + "http://localhost:8081/verify/" + token);
         mailSender.send(message);
     }
 }
