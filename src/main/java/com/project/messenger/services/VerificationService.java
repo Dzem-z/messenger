@@ -4,8 +4,6 @@ import com.project.messenger.entities.User;
 import com.project.messenger.entities.VerificationToken;
 import com.project.messenger.repositories.UserRepository;
 import com.project.messenger.repositories.VerificationTokenRepository;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -36,7 +34,7 @@ public class VerificationService {
         emailService.sendVerificationMail(user.getEmail(), token);
     }
 
-    public boolean verifyToken(String token) {
+    public boolean verifyUser(String token) {
         var maybeVerificationToken = verificationTokenRepository.findByToken(token);
         if (maybeVerificationToken.isEmpty()) {
             return false;
