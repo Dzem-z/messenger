@@ -42,8 +42,6 @@ public class User {
 
     private String email;
 
-    private boolean isVerified = false;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_authorities",

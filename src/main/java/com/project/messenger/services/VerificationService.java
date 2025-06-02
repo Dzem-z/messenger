@@ -1,8 +1,9 @@
 package com.project.messenger.services;
 
 import com.project.messenger.entities.User;
+import com.project.messenger.entities.UserStatus;
 import com.project.messenger.entities.VerificationToken;
-import com.project.messenger.repositories.UserRepository;
+import com.project.messenger.repositories.UserStatusRepository;
 import com.project.messenger.repositories.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,22 @@ import java.util.UUID;
 @Service
 public class VerificationService {
     private final VerificationTokenRepository verificationTokenRepository;
-    private final UserRepository userRepository;
+    private final UserStatusRepository userStatusRepository;
     private final EmailService emailService;
 
-    public VerificationService(VerificationTokenRepository verificationTokenRepository, UserRepository userRepository, EmailService emailService) {
+    public VerificationService(VerificationTokenRepository verificationTokenRepository, UserStatusRepository userStatusRepository, EmailService emailService) {
         this.verificationTokenRepository = verificationTokenRepository;
-        this.userRepository = userRepository;
+        this.userStatusRepository = userStatusRepository;
         this.emailService = emailService;
     }
 
-    public void sendVerificationMail(User user) {
+
+    public void startVerificationProcess(User user) {
+        var userStatus = new UserStatus();
+        userStatus.setUser(user);
+        userStatus.setVerified(false);
+        userStatusRepository.save(userStatus);
+
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setToken(token);
@@ -47,8 +54,16 @@ public class VerificationService {
         }
 
         User user = verificationToken.getUser();
-        user.setVerified(true);
-        userRepository.save(user);
+
+        var maybeUserStatus = userStatusRepository.findByUser(user);
+        if (maybeUserStatus.isEmpty()) {
+            return false;
+        }
+
+        UserStatus userStatus = maybeUserStatus.get();
+        userStatus.setVerified(true);
+        userStatusRepository.save(userStatus);
+
         verificationTokenRepository.delete(verificationToken);
         return true;
     }

@@ -16,7 +16,7 @@ public class VerificationController {
     @GetMapping("/verify/{token}")
     public String verify(@PathVariable String token) {
         var result = verificationService.verifyUser(token);
-//        var result = true;
+//        var result = false;
         if (result)
             return "mail-suc";
         return "mail-err";
