@@ -15,10 +15,21 @@ public class EmailService {
 
     public void sendPasswordResetMail(String email, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("messenger@hak.com");
         message.setTo(email);
         message.setSubject("Password Reset");
         message.setText("You can reset your password by clicking on the link below:\n"
         + "http://localhost:8081/reset-password/" + token);
+        mailSender.send(message);
+    }
+
+    public void sendVerificationMail(String email, String token) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("messenger@hak.com");
+        message.setTo(email);
+        message.setSubject("Verification");
+        message.setText("You can verfy your email by clicking on the link below:\n"
+        + "http://localhost:8081/verification/" + token);
         mailSender.send(message);
     }
 }
