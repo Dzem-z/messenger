@@ -1,8 +1,11 @@
 package com.project.messenger.services;
 
 import com.project.messenger.entities.PasswordResetToken;
+import com.project.messenger.entities.User;
+import com.project.messenger.entities.UserStatus;
 import com.project.messenger.repositories.PasswordResetTokenRepository;
 import com.project.messenger.repositories.UserRepository;
+import com.project.messenger.repositories.UserStatusRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Service;
@@ -15,11 +18,13 @@ public class PasswordResetService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EmailService emailService;
     private final UserRepository userRepository;
+    private final UserStatusRepository userStatusRepository;
 
-    public PasswordResetService(PasswordResetTokenRepository passwordResetTokenRepository, EmailService emailService, UserRepository userRepository) {
+    public PasswordResetService(PasswordResetTokenRepository passwordResetTokenRepository, EmailService emailService, UserRepository userRepository, UserStatusRepository userStatusRepository) {
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.emailService = emailService;
         this.userRepository = userRepository;
+        this.userStatusRepository = userStatusRepository;
     }
 
     public void startPasswordResetProcess(String email) {
@@ -27,8 +32,19 @@ public class PasswordResetService {
         if (maybeUser.isEmpty())
             return;
 
+        User user = maybeUser.get();
+
+        var maybeUserStatus = userStatusRepository.findByUser(user);
+        if (maybeUserStatus.isEmpty())
+            return;
+
+        UserStatus userStatus = maybeUserStatus.get();
+
+        if (!userStatus.isVerified())
+            return;
+
         PasswordResetToken passwordResetToken = new PasswordResetToken();
-        passwordResetToken.setUser(maybeUser.get());
+        passwordResetToken.setUser(user);
         passwordResetToken.setToken(UUID.randomUUID().toString());
         var created = LocalDateTime.now();
         var expired = created.plusMinutes(30);
