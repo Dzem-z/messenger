@@ -3,6 +3,7 @@ package com.project.messenger.services;
 import com.project.messenger.entities.User;
 import com.project.messenger.entities.UserStatus;
 import com.project.messenger.entities.VerificationToken;
+import com.project.messenger.repositories.UserRepository;
 import com.project.messenger.repositories.UserStatusRepository;
 import com.project.messenger.repositories.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
@@ -15,11 +16,13 @@ public class VerificationService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserStatusRepository userStatusRepository;
     private final EmailService emailService;
+    private final UserRepository userRepository;
 
-    public VerificationService(VerificationTokenRepository verificationTokenRepository, UserStatusRepository userStatusRepository, EmailService emailService) {
+    public VerificationService(VerificationTokenRepository verificationTokenRepository, UserStatusRepository userStatusRepository, EmailService emailService, UserRepository userRepository) {
         this.verificationTokenRepository = verificationTokenRepository;
         this.userStatusRepository = userStatusRepository;
         this.emailService = emailService;
+        this.userRepository = userRepository;
     }
 
 
@@ -66,5 +69,23 @@ public class VerificationService {
 
         verificationTokenRepository.delete(verificationToken);
         return true;
+    }
+
+    public boolean isUserVerified(String username) {
+        var maybeUser = userRepository.findUserByUsername(username);
+        if (maybeUser.isEmpty()) {
+            return false;
+        }
+
+        var user = maybeUser.get();
+
+        var maybeUserStatus = userStatusRepository.findByUser(user);
+        if (maybeUserStatus.isEmpty()) {
+            return false;
+        }
+
+        UserStatus userStatus = maybeUserStatus.get();
+
+        return userStatus.isVerified();
     }
 }
