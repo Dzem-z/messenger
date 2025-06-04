@@ -2,6 +2,7 @@ package com.project.messenger.controllers;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 
+import com.project.messenger.services.VerificationService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,9 +23,11 @@ import com.project.messenger.services.UserService;
 public class AuthController {
 
     UserService userService;
+    VerificationService verificationService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, VerificationService verificationService) {
         this.userService = userService;
+        this.verificationService = verificationService;
     }
 
 
@@ -52,6 +55,7 @@ public class AuthController {
             return "redirect:/register";
         }
 
+        verificationService.startVerificationProcess(user);
         attributes.addAttribute("success", true);
         return "redirect:/register";
     }
