@@ -2,6 +2,7 @@ import {connect, disconnect, sendMessage, setConnectionCallback} from "../connec
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { ReactComponent as AttachmentIcon } from '../assets/svg/attachment.svg';
 import { ReactComponent as SendIcon } from '../assets/svg/send.svg';
+import { ReactComponent as CancelIcon } from '../assets/svg/cancel.svg';
 import fetchData from "../connectors/fetchData.js";
 import { MAX_FILE_SIZE, host } from "../const.js";
 import uploadFile from "../connectors/uploadFile.js";
@@ -39,6 +40,7 @@ export default function ChatScreen({ chat, user }) {
         if (!file) return;
         try {
             const result = await uploadFile(file, chat.idToken);
+            setFile(null); 
         } catch (err) {
             console.log('Upload failed' + err);
         }
@@ -49,6 +51,8 @@ export default function ChatScreen({ chat, user }) {
     }
 
     useEffect(() => {
+
+        console.log(window.location.pathname)
         if (chat && chat.members && chat.isPrivate !== undefined && chat.isPrivate !== null) {
             if (chat.isPrivate) {
                 setChatName(chat.members.find(member => member.username !== user.username)?.username || "Your Private Chat");
@@ -109,7 +113,23 @@ export default function ChatScreen({ chat, user }) {
     const fileUploaded = () => {
         return file != null && file != undefined;
     }
+
+    const handleFileCancel = () => {
+        setFile(null);
+    }
     
+    function getExtension(filename) {
+        const parts = filename.split('.');
+        if (parts.length <= 1 || parts[parts.length - 1] === '') return '';
+        return parts.pop().toLowerCase();
+    }
+
+    function isImageExtension(filename) {
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'ico', 'tiff'];
+        const ext = getExtension(filename);
+        return imageExtensions.includes(ext);
+    }
+
     useEffect(connectStomp, [connectStomp]);
 
     return <div className="chat-container">
@@ -133,18 +153,32 @@ export default function ChatScreen({ chat, user }) {
                                         {message.author.username.charAt(0).toUpperCase()}
                                     </div>
                                 }
-                                <div className={`message-content ${message.author.username === user.username ? 'user-message' : 'other-message'} ${isFile(message) ? 'file-message' : ''}`}>
+                                <div className={`message-content ${message.author.username === user.username ? 'user-message' : 'other-message'} ${isFile(message) ? 'file-message' : ''}  ${isImageExtension(message.content) ? 'image-message' : ''}`}>
                                     {isFile(message) ? (
-                                        <a 
-                                            href={`${host}/api/files/one/${message.idToken}`} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer"
-                                        >
-                                            {message.content}
-                                        </a>
+                                        isImageExtension(message.content) ? (
+                                            <a 
+                                                href={`${host}/api/files/one/${message.idToken}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                            >
+                                                <img 
+                                                    src={`${host}/api/files/one/${message.idToken}`} 
+                                                    alt={message.content} 
+                                                    style={{ width: '100%', borderRadius: '10px', cursor: 'pointer' }}
+                                                />
+                                            </a>    
+                                        ) : (
+                                            <a 
+                                                href={`${host}/api/files/one/${message.idToken}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                            >
+                                                {message.content}
+                                            </a>
+                                        )
                                     ) : (
-                                        message.content
-                                    )}
+                                    message.content
+                                )}
                                 </div>
                             </div>
                             
@@ -156,10 +190,19 @@ export default function ChatScreen({ chat, user }) {
                         <button type="button" id="send-file" className="input-button" onClick={handleFileClick}>
                               <AttachmentIcon width={35} height={35} />
                         </button>
+                        {error && <p style={{ color: 'red' }}>{error}</p>}
+                        {file &&
+                            <>
+                                <b style={{paddingInline: '5px'}}>{file.name}</b>
+                                <button type="button" id="cancel-file" className="input-button" onClick={handleFileCancel}>
+                                    <CancelIcon width={20} height={20} />
+                                </button>
+                            </>
+                        }
                         <input 
                             type="text" 
                             name="message"  
-                            placeholder="Enter your message..."
+                            placeholder={file ? "" : "Enter your message..."}
                             value={message}
                             className="chat-input-field"
                             onChange={handleChangeMessage}
@@ -173,13 +216,11 @@ export default function ChatScreen({ chat, user }) {
                             style={{ display: 'none' }}
                             onChange={handleChangeFile}
                         />
-                        {error && <p style={{ color: 'red' }}>{error}</p>}
-                        {file && <p><b>{file.name}</b></p>}
                         <button id="send" type="submit" className="input-button">
                             <SendIcon width={35} height={35} />
                         </button>
                     </form>
                 </div>
                 
-            </div>;
+            </div>
 }

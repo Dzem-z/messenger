@@ -94,6 +94,7 @@
   color: white;
   flex: 1;
   margin-inline: 3%;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .chat-input-field:focus {
@@ -146,6 +147,11 @@
 
 .file-message{
   background-color: var(--file-message-color);
+  padding-block: 20px;
+}
+
+.image-message{
+  background-color: var(--chat-background-color);
 }
 
 .user-alligment{
@@ -213,7 +219,7 @@
 
 .Panel-0 {
   display:flex;
-  background-color: rgb(255, 255, 255);
+  background-color: black;
   padding: 1%;
   box-sizing: border-box;
   height: 100vh;
