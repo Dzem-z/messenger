@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { ReactComponent as AttachmentIcon } from '../assets/svg/attachment.svg';
 import { ReactComponent as SendIcon } from '../assets/svg/send.svg';
 import { ReactComponent as CancelIcon } from '../assets/svg/cancel.svg';
+import { ReactComponent as FileIcon } from '../assets/svg/file.svg';
 import fetchData from "../connectors/fetchData.js";
 import { MAX_FILE_SIZE, host } from "../const.js";
 import uploadFile from "../connectors/uploadFile.js";
@@ -173,7 +174,8 @@ export default function ChatScreen({ chat, user }) {
                                                 target="_blank" 
                                                 rel="noopener noreferrer"
                                             >
-                                                {message.content}
+                                                <FileIcon className="file-icon" />
+                                                <span>{message.content}</span>
                                             </a>
                                         )
                                     ) : (

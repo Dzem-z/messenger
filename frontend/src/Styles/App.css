@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #12076f;
-  --secondary-color: #462cf1;  
+  --primary-color: #ffffff;
+  --secondary-color: #000000;  
   --text-color: #333;
   --background-color: #191919;
   --nav-color:#202020;
@@ -135,6 +135,23 @@
   text-decoration: none;
   color: white;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.message-content a span {
+  flex: 1 1 auto; 
+  min-width: 0;   
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.file-icon{
+  height: 4vh;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
 }
 
 .user-message {
@@ -152,6 +169,7 @@
 
 .image-message{
   background-color: var(--chat-background-color);
+  padding-block: 0px;
 }
 
 .user-alligment{
@@ -206,6 +224,7 @@
   border-radius: 8px;
   background-color: rgb(167, 167, 167);
   box-shadow: 0 0 5px 2px rgba(0,0,0,.35);
+  color: black;
 }
 
 .Panel-2-Nav-Tile {
@@ -241,7 +260,7 @@ ul {
 }
 
 .links a {
-	color: var(--primary-color);
+	color: white;
   position: relative;
   text-decoration: none;
 }
@@ -252,7 +271,7 @@ ul {
   width: 100%;
   height: 4px;
   border-radius: 4px;
-  background-color: var(--primary-color);
+  background-color: white;
   bottom: 0;
   left: 0;
   transform-origin: right;
@@ -272,9 +291,9 @@ ul {
 .tile {
   padding: 5%;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #7a7a7a;
   border-radius: 12px;
-  box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
+  box-shadow: transparent 0 0 0 3px,rgba(0, 0, 0, 0.555) 0 6px 20px;
   box-sizing: border-box;
   color: var(--primary-color);
   cursor: pointer;
@@ -303,11 +322,11 @@ ul {
 }
 
 .tile.chat.selected {
-  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
+  box-shadow: white 0 0 0 3px, transparent 0 0 0 0;
 }
 
 .tile:hover {
-  box-shadow: var(--primary-color) 0 0 0 3px, transparent 0 0 0 0;
+  box-shadow: white 0 0 0 3px, transparent 0 0 0 0;
 }
 
 .border-box.main {
@@ -445,7 +464,7 @@ ul {
   background-image: none;
   border-style: none;
   box-sizing: border-box;
-  color: var(--primary-color);
+  color: black;
   cursor: pointer;
   display: inline-block;
   flex-direction: row;
@@ -571,7 +590,7 @@ ul {
 .send-form-input {
   appearance: none;
   background-color: none;
-  border: 3px solid var(--primary-color);
+  border: 3px solid black;
   line-height: 0;
   font-size: 1.2rem;
   width: 75%;
@@ -589,7 +608,7 @@ ul {
 
 .send-form-input:focus {
   outline: none;
-  background: #462cf1;
+  background: #000000;
   color: white;
   margin-left: 30px;
 }
