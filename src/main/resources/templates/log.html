@@ -26,6 +26,11 @@
 					You have been logged out.
 				</div>
 			</div>
+			<div th:if="${param.notVerified}">
+				<div class="alert alert-info">
+					You must verify your email
+				</div>
+			</div>
 			<div class="card-body">
 				<form th:action="@{/login}" method="post">
 					<div class="form-group mb-3">
