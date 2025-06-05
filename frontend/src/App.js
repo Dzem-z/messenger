@@ -44,7 +44,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate replace to="/home" />} />
         { chats.length != 0 ?
-          <Route path="/home" element={<ChatScreen chat={chats[0]} />} /> :
+          <Route path="/home" element={<ChatScreen chat={chats[0]} user={user} />} /> :
           <Route path="/home" element={<EmptyChatScreen />} />
         }
         <Route path="/userProfile" element={<ProfileScreen />} />
@@ -52,7 +52,7 @@ function App() {
         <Route path="/newPrivateChat" element={<NewPrivateChatScreen />} />
         <Route path="/newPublicChat" element={<NewPublicChatScreen />} />
         {chats.map(chat => 
-          <Route path={"/chat/" + chat.idToken} element={<ChatScreen chat={chat} />} />
+          <Route path={"/chat/" + chat.idToken} element={<ChatScreen chat={chat} user={user} />} />
         )}
       </Routes>
     </div>

@@ -1,36 +1,59 @@
 # messenger
 
-This is a simple messaging app written using Spring Boot framework and React.js. It allows users to message each other in real-time.
+This is a real-time messaging application built using **Spring Boot** (backend) and **React.js** (frontend). It supports **private** and **group chats**, allowing users to exchange **text messages**, **images**, and **files**.
 
 ![sample](img/chat.png)
+
+
+### Features
+
+- 🔒 User authentication: registration, login, logout, password reset, account deletion
+- 📧 Email verification and email-based notifications (e.g., password reset emails)
+- 💬 Real-time messaging (WebSocket-based)
+- 📎 File and image sharing (max. 4MB per file)
+- 👥 Creation of private and group chats
+- 🔐 **End-to-end encryption** of messages and files
 
 ### License
 This project is developed under an MIT license.
 
+### Requirements
+
+To run the project is needed:
+- **Docker** and **Docker Compose** (to start the required services)
+- **Node.js** and **npm** (to run the frontend application)
+
 ### Installation
-In order for the server to start, the database is needed. Connection with the database can be configured in the [application.properties](src/main/resources/application.properties) file. By default, it listens on localhost:3306 MySQL port and uses springdb as a database. The default username is "spring" and the password is "password". Here is a sample config using docker:<br /><br />
-First, create a MySQL container:<br />
-```
-docker run --rm --name spring-mysql -e MYSQL_ROOT_PASSWORD=toor -e MYSQL-NATIVE-PASSWORD=ON -p 3306:3306 --mount source=springdb,target=/var/lib/mysql -d mysql
+In order for the server to start, both the **database** and the **SMTP mail client** need to be running.  
+These services are already configured in the [`docker-compose.yml`](docker-compose.yml) file and can be started together using Docker Compose.
+
+The application connects by default to a MySQL database at `localhost:3306`, using:
+- Database name: `springdb`
+- Username: `spring`
+- Password: `password`
+
+For email functionality (e.g., account verification, password reset), an SMTP client is required.  
+The project uses [**MailHog**](https://github.com/mailhog/MailHog) as a lightweight SMTP server for development and testing.  
+MailHog is also started via Docker Compose and does not require additional configuration.
+
+To start all required services, simply run:
+
+```bash
+docker-compose up -d
 ```
 
-Then execute the [prepare_database](prepare_database.sql) script. For example: <br />
+Next, run the **backend**:
+
+```bash
+./mvnw spring-boot:run
 ```
-mysql -u root -h 127.0.0.1 -P 3306 -p < prepare_database.sql
-```
-Next, to build frontend, in the directory frontend run:
-```
+
+Finally, run **frontend**:
+```bash
+cd frontend
 npm install
+BROWSER=none npm start
 ```
-Then:
-```
-npm run build
-```
-Copy the contents to static directory:
-```
-cp -r frontend/build/* src/main/resources/static
-```
-Finally, to run the application, execute the maven script:
-```
-./mvnw spring-boot:start
-```
+
+### How to use
+Once everything is running, open your browser and navigate to [localhost:8081](http://localhost:8081) to start using the application.
