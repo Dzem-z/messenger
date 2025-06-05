@@ -18,7 +18,9 @@
   border-radius: 45px;
   overflow: hidden;
   text-align: center;
-  width: 100%;
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-header{
@@ -38,7 +40,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 80%;
+  flex-grow: 1;
   overflow-y: auto;
   overflow-x: hidden;
   padding-inline: 5%;
@@ -65,8 +67,7 @@
 
 .chat-input{
   padding-inline: 7%;
-  justify-content: center;
-  align-items: center;
+  padding-bottom: 3%;
 }
 
 .chat-input-container {
@@ -192,10 +193,6 @@
   font-weight: bold;
   font-size: 16px;
   color: black;
-}
-
-.message-content-wrapper{
-
 }
 
 
